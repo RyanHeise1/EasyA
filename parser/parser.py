@@ -45,7 +45,6 @@ def getFaculty():
         except:
             print("Couldn't pull", subject)
 
-    print(professors)
 
 # gets data from gd.js
 def parseGradeData(department, number, professor):
