@@ -78,11 +78,11 @@ def parseGradeData(department, number, professor):
 
 
 
-print(parseGradeData("MATH", "111", "Leahy, John F."))
-#returns a list of dictionaries of class and prof
+print(parseGradeData("MATH", "111", "Arbo, Matthew David"))
+#returns a list of dictionaries of MATH111 with Arbo, Matthew David
 
 print(parseGradeData("MATH", "111", None))
 #returns a list of dictionaries of MATH111
 
-print(parseGradeData("AA", None, None))
-#returns dictionary with the keys being the class name (i.e. MATH111), the values being a list of dictionaries (from each term)
+print(parseGradeData("MATH", None, None))
+#returns dictionary with the keys being the class name (i.e. MATH111), the values being a list of dictionaries (for each term of such class)
