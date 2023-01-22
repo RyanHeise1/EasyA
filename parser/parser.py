@@ -74,7 +74,8 @@ def parseGradeData(department: str, number: str, professor: str):
 def appendData(classname: str, newData: dict):
     #dictionary should be of the format {"TERM_DESC":value, "aprec":value, "bprec":value, "cprec":value,
                                 #   "crn": value, "dprec":value, "fprec":value, "instructor":value}
-
+    
+    #appends data
     with open('gd.js', 'r') as f:
         gradeData = json.loads(f.read())
         #if class exists in gradedata
@@ -83,6 +84,7 @@ def appendData(classname: str, newData: dict):
         else:
             gradeData[classname] = [newData]
 
+    #writes the data
     with open('gd.js', 'w') as f:
         json_object = json.dumps(gradeData, indent=4)
         f.write(json_object)
@@ -91,6 +93,7 @@ def appendData(classname: str, newData: dict):
 
 #getFaculty()
 
+#----------------------getting data---------------------------------
 print(parseGradeData("MATH", "111", "Arbo, Matthew David"))
 #returns a list of dictionaries of MATH111 with Arbo, Matthew David
 
@@ -100,7 +103,9 @@ print(parseGradeData("MATH", "111", "Arbo, Matthew David"))
 #print(parseGradeData("MATH", None, None))
 #returns dictionary with the keys being the class name (i.e. MATH111), the values being a list of dictionaries (from each term)
 
-# appendData("MATH111", {
+#------------------------appending data-----------------------------
+# print(parseGradeData("AA", "508", None))
+# appendData("AA508", {
 #             "TERM_DESC": "Fall 2022",
 #             "aprec": "20.0",
 #             "bprec": "28.0",
@@ -110,3 +115,4 @@ print(parseGradeData("MATH", "111", "Arbo, Matthew David"))
 #             "fprec": "16.0",
 #             "instructor": "Fake, Data"
 #         })
+# print(parseGradeData("AA", "508", None))
