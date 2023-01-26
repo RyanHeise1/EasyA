@@ -8,7 +8,7 @@
 
 1/25 --> code pushed to github
 
-
+1/26 --> added function to sort teacher data
 '''
 
 import json
