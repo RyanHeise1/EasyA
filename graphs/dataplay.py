@@ -6,13 +6,15 @@
 	taught more than one class, the average
 	percent would be used
 
+1/25 --> code pushed to github
+
 
 '''
 
 import json
 import matplotlib.pyplot as plt
 
-f = open('gradedata.json', 'r')
+f = open('gd.js', 'r')
 
 data = json.load(f)
 
@@ -32,6 +34,7 @@ def aPer(class_name):
 		else:
 			# first time this teacher has shown up (count is 1)
 			myDict[lname] = [float(i['aprec']), 1]
+	myDict = sort_dict_by_value(myDict, key_func=lambda x: x[0])
 
 	#create lists, so mathplots is easier		
 	instrucs = []
@@ -42,6 +45,7 @@ def aPer(class_name):
 		instrucs.append(i + " (" + str(myDict[i][1]) + ")")
 		a_per.append(myDict[i][0])
 
+
 	#graphing 
 	fig, ax = plt.subplots()
 	ax.bar(instrucs, a_per)
@@ -51,6 +55,9 @@ def aPer(class_name):
 	plt.show()
 
 	#print(myDict)
+
+def sort_dict_by_value(d, key_func, reverse=True):
+	return dict(sorted(d.items(), key=lambda item: key_func(item[1]), reverse=reverse))
 
 
 aPer("AAAP510")
