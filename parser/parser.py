@@ -94,6 +94,10 @@ def getClassNumbers(department: str):
         if department in clas:
             for l in levels:
                 if clas.startswith(department + l):
+                    # with the full class name (i.e. MATH111)
+                    # class_numbers[int(l + "00")].append(clas)
+                    
+                    # with only class name (i.e. 111)
                     class_numbers[int(l + "00")].append(clas.strip(department))
                     break
 
