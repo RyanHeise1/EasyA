@@ -1,6 +1,7 @@
 from tkinter import *
 from tkinter import messagebox,ttk
 from parser import *
+import os.path
 
 department_list = ["Biology", "Chemistry", "Computer and Information Sciences", "Human Physiology", "Mathematics", "Physics", "Psychology"]
 include_GS = 1 # variable indicating whether graduate student instructors are shown
@@ -62,9 +63,10 @@ window.resizable(False, False)
 window.config(bg="#007030")
 
 # UO logo image
-UOimage = PhotoImage(file="uoo.png")
-imageLabel = Label(image=UOimage, bg="#007030")
-imageLabel.place(x=-7, y=-10)
+if (os.path.isfile("uoo.png")):
+    UOimage = PhotoImage(file="uoo.png")
+    imageLabel = Label(image=UOimage, bg="#007030")
+    imageLabel.place(x=-7, y=-10)
 
 # labels indicating what each combobox is for
 label1 = Label(text="Department Name", font=("Helvetica 15 bold"), bg="#007030", fg="#FEE11A")
