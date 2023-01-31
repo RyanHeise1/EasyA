@@ -184,7 +184,6 @@ def graph_data(myDict, y_label: str, title:str, display_d_f: bool):
 		ax.set_ylabel(y_label)
 		ax.set_title(title)
 		ax.tick_params(axis='y', labelsize=6)
-		plt.figure(figsize=(20,5))
 		plt.show()
 	return
 
