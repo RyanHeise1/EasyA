@@ -20,7 +20,7 @@ import pparser as p
 
 
 
-def A_percent(dep: str, level:str , classNum: str, allInstrucs: bool):
+def A_percent(dep: str, level:str , classNum: str, allInstrucs: bool, list_dept_num: bool):
 		#Takes all the info and deals with all the cases
 			########
 			# DOESN'T DEAL WITH ALLiINSTUCS YET
@@ -37,18 +37,18 @@ def A_percent(dep: str, level:str , classNum: str, allInstrucs: bool):
 		# Parse all classes in department
 		if level == None and classNum == None:
 			#we only have department name, go through all the classes
-			d = p.parseGradeData(dep, None, None)
-
-			for c in d:
-				#plots each individual class
-				aPer(c, d[c])
+			data = p.parseGradeData(dep, None, None)
+			all_class_graph(data, dep)
 
 		# Parse level in department
 		elif level != None and classNum == None:
 			# we have the level of the department
 			allC = p.getClassNumbers(dep)
 			data = allC[int(level)]
-			department_graph(data, dep, level)
+			if list_dept_num:
+				department_graph(data, dep, level)
+			else:
+				return
 
 
 		# Parse individual class
@@ -59,23 +59,39 @@ def A_percent(dep: str, level:str , classNum: str, allInstrucs: bool):
 			#plug into aPer
 			instructor_graph(dep + classNum, d)
 
-def department_graph(class_list, dep, level):
-	# {CLASS_NUM: [aperc, d+fperc, NUM_CLASSES]}
+def all_class_graph(class_list, dep):
 	myDict = {}
+	for i in class_list:
+		for j in class_list[i]:
+			lname = j['instructor'].split(',')[0]
+			total_failing = float(j['dprec']) + float(j['fprec'])
+			aprec = float(j['aprec'])
+			if lname in myDict:
+				myDict[lname][0] += aprec 			# a percentage
+				myDict[lname][1] += total_failing 	# d/f percentage
+				myDict[lname][2] += 1 				# number of classes
+			else:
+				myDict[lname] = [aprec, total_failing, 1]
+	myDict = average_dict(myDict)
+	graph_data(myDict, "Instructor", f'All {dep} Classes', False)
+
+def department_graph(class_list, dep, level):
+	# mydict = {class_num_1: [aperc, d+fperc, number_of_classes], class_num_2: [...]}
+	myDict = {}
+	# Loop over the list of classes 
 	for i in class_list:
 		class_data = p.parseGradeData(dep, i, None)
 		for j in class_data:
 			total_failing = float(j['dprec']) + float(j['fprec'])
 			aprec = float(j['aprec'])
 			if i in myDict:
-				myDict[i][0] += aprec # a percentage
-				myDict[i][1] += total_failing # d/f percentage
-				myDict[i][2] += 1 # number of classes
+				myDict[i][0] += aprec 			# a percentage
+				myDict[i][1] += total_failing 	# d/f percentage
+				myDict[i][2] += 1 				# number of classes
 			else:
 			 	myDict[i] = [aprec, total_failing, 1]
 	myDict = average_dict(myDict)
-	graph_data(myDict, "Classes", f'All {dep} {level}-level', True)
-
+	graph_data(myDict, "Classes", f'All {dep} {level}-level', False)
 
 def instructor_graph(class_name, data):
 	myDict = {}
@@ -99,53 +115,8 @@ def instructor_graph(class_name, data):
 			myDict[lname] = [aprec, total_failing, 1]
 
 	myDict = average_dict(myDict)
-	sorted_a = sort_dict_by_value(myDict, key_func=lambda x: x[0])
-	sorted_f = sort_dict_by_value(myDict, key_func=lambda x: x[1])
-
-	#create lists, so mathplots is easier		
-	a_instrucs = []
-	a_per = []
-	f_instrucs = []
-	f_per = []
-
-	for i in sorted_a:
-		#add how many classes this professors done to name
-		a_instrucs.append(i + " (" + str(myDict[i][2]) + ")")
-		a_per.append(myDict[i][0])
-	# instrucs = []
-	for j in sorted_f:
-		#instrucs.append(i + " (" + str(myDict[i][2]) + ")")
-		f_instrucs.append(j + " (" + str(myDict[j][2]) + ")")
-		f_per.append(myDict[j][1])
-
-	#graphing 
-	display_d_f = False
-	if display_d_f == True:
-		ax = plt.subplot(1, 2, 1)
-		ax.barh(a_instrucs, a_per)
-		ax.set_xlabel("Percentage of A's")
-		ax.set_ylabel("Professors' Last Names")
-		ax.set_title(class_name)
-		ax.tick_params(axis='y', labelsize=6)
-
-		ax = plt.subplot(1, 2, 2)
-		ax.barh(f_instrucs, f_per)
-		ax.set_xlabel("Percentage of D / F")
-		ax.set_ylabel("Professors' Last Names")
-		ax.set_title(class_name)
-		ax.tick_params(axis='y', labelsize=6)
-		plt.tight_layout()
-		plt.show()
-		return
-	else:
-		fig, ax = plt.subplots()
-		ax.barh(a_instrucs, a_per)
-		ax.set_ylabel("Percentage of A's")
-		ax.set_xlabel("Professors' Last Names")
-		ax.set_title(class_name)
-		ax.tick_params(axis='y', labelsize=6)
-		plt.show()
-		return
+	graph_data(myDict, "Instructor", class_name, True)
+	
 
 def graph_data(myDict, y_label: str, title:str, display_d_f: bool):
 	sorted_a = sort_dict_by_value(myDict, key_func=lambda x: x[0])
@@ -171,14 +142,14 @@ def graph_data(myDict, y_label: str, title:str, display_d_f: bool):
 		ax = plt.subplot(1, 2, 1)
 		ax.barh(a_data, a_per)
 		ax.set_xlabel("Percentage of A's")
-		ax.set_ylabel("Classes")
+		ax.set_ylabel(y_label)
 		ax.set_title(title)
 		ax.tick_params(axis='y', labelsize=6)
 
 		ax = plt.subplot(1, 2, 2)
 		ax.barh(f_data, f_per)
 		ax.set_xlabel("Percentage of D / F")
-		ax.set_ylabel("Classes")
+		ax.set_ylabel(y_label)
 		ax.set_title(title)
 		ax.tick_params(axis='y', labelsize=6)
 		plt.tight_layout()
@@ -188,7 +159,7 @@ def graph_data(myDict, y_label: str, title:str, display_d_f: bool):
 		fig, ax = plt.subplots()
 		ax.barh(a_data, a_per)
 		ax.set_xlabel("Percentage of A's")
-		ax.set_ylabel("Classes")
+		ax.set_ylabel(y_label)
 		ax.set_title(title)
 		ax.tick_params(axis='y', labelsize=6)
 		plt.show()
@@ -216,7 +187,7 @@ def sort_dict_by_value(d, key_func, reverse=True):
 #aPer("AAAP511")
 #aPer("AAD199")
 
-A_percent("MATH", "100", None, True)
+A_percent("MATH", None, None, True, False)
 #A_percent("MATH", None, "111", True)
 
 
