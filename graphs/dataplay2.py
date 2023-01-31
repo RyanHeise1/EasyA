@@ -20,7 +20,7 @@ import pparser as p
 
 
 
-def A_percent(dep: str, level:str , classNum: str, allInstrucs: bool, list_dept_num: bool):
+def main(dep: str, level:str , classNum: str, allInstrucs: bool, list_dept_num: bool):
 		#Takes all the info and deals with all the cases
 			########
 			# DOESN'T DEAL WITH ALLiINSTUCS YET
@@ -60,6 +60,13 @@ def A_percent(dep: str, level:str , classNum: str, allInstrucs: bool, list_dept_
 			instructor_graph(dep + classNum, d)
 
 def all_class_graph(class_list, dep):
+	"""
+	Input:
+		- class_list (dict) : dictionary provided from web scraper 
+		- dep (str) : Department of class (ie MATH, BI, CS)
+	Return: 
+		- None
+	"""
 	myDict = {}
 	for i in class_list:
 		for j in class_list[i]:
@@ -76,6 +83,14 @@ def all_class_graph(class_list, dep):
 	graph_data(myDict, "Instructor", f'All {dep} Classes', False)
 
 def department_graph(class_list, dep, level):
+	"""
+	Input:
+		- class_list () : 
+		- dep (str) : Department of class (ie MATH, BI, CS)
+		- level (str) : Level of class (ie 122, 314)
+	Return: 
+		- None
+	"""
 	# mydict = {class_num_1: [aperc, d+fperc, number_of_classes], class_num_2: [...]}
 	myDict = {}
 	# Loop over the list of classes 
@@ -94,6 +109,13 @@ def department_graph(class_list, dep, level):
 	graph_data(myDict, "Classes", f'All {dep} {level}-level', False)
 
 def instructor_graph(class_name, data):
+	"""
+	Input:
+		- class_name (str) : Name of the class
+		- data (dict) : Dictionary from the scraper
+	Return: 
+		- None
+	"""
 	myDict = {}
 	#'instructor': [ average_aper, count] 
 	# 	eventually will probably want passing / d - f rate as well
@@ -128,17 +150,16 @@ def graph_data(myDict, y_label: str, title:str, display_d_f: bool):
 	f_data = []
 	f_per = []
 
+	#add how many classes this professors done to name
 	for i in sorted_a:
-		#add how many classes this professors done to name
 		a_data.append(i + " (" + str(myDict[i][2]) + ")")
 		a_per.append(myDict[i][0])
-	# instrucs = []
 	for j in sorted_f:
-		#instrucs.append(i + " (" + str(myDict[i][2]) + ")")
 		f_data.append(j + " (" + str(myDict[j][2]) + ")")
 		f_per.append(myDict[j][1])
 
 	if display_d_f:
+		# Create 2 graphs and plot
 		ax = plt.subplot(1, 2, 1)
 		ax.barh(a_data, a_per)
 		ax.set_xlabel("Percentage of A's")
@@ -156,16 +177,24 @@ def graph_data(myDict, y_label: str, title:str, display_d_f: bool):
 		plt.show()
 		return
 	else:
+		# Create one graph
 		fig, ax = plt.subplots()
 		ax.barh(a_data, a_per)
 		ax.set_xlabel("Percentage of A's")
 		ax.set_ylabel(y_label)
 		ax.set_title(title)
 		ax.tick_params(axis='y', labelsize=6)
+		plt.figure(figsize=(20,5))
 		plt.show()
 	return
 
 def average_dict(myDict):
+	"""
+	Input:
+		- myDict (dict): format {key: [aperc, fperc, total_classes]})
+	Return:
+		- Averaged aperc and fperc based on total_classes
+	"""
 	for i in myDict:
 		total_classes = myDict[i][2]
 		# Average 'a' score
@@ -178,17 +207,20 @@ def average_dict(myDict):
 
 
 def sort_dict_by_value(d, key_func, reverse=True):
+	"""
+	Input:
+		- d (dict) : Dictionary you want sorted. format {key: [aperc, fperc, total_classes]})
+		- key_func (lambda func) : lambda function of item in list you want sorted
+		- reverse (bool) : Sort list by increasing/decreasing order
+	Return:
+		- sorted dictionary
+	"""
 	return dict(sorted(d.items(), key=lambda item: key_func(item[1]), reverse=reverse))
 
 
 
-
-#aPer("AAAP510")
-#aPer("AAAP511")
-#aPer("AAD199")
-
-A_percent("MATH", None, None, True, False)
-#A_percent("MATH", None, "111", True)
+main("MATH", None, None, True, False)
+#main("MATH", None, "111", True)
 
 
 #What if bad input?! (not this problem)
