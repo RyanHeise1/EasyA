@@ -78,53 +78,8 @@ def instructor_graph(class_name, data, display_d_f, allInstrucs):
 
 
 	myDict = average_dict(myDict)
-	sorted_a = sort_dict_by_value(myDict, key_func=lambda x: x[0])
-	sorted_f = sort_dict_by_value(myDict, key_func=lambda x: x[1])
-
-	#create lists, so mathplots is easier		
-	a_instrucs = []
-	a_per = []
-	f_instrucs = []
-	f_per = []
-
-	for i in sorted_a:
-		#add how many classes this professors done to name
-		a_instrucs.append(i + " (" + str(myDict[i][2]) + ")")
-		a_per.append(myDict[i][0])
-
-	for j in sorted_f:
-		f_instrucs.append(j + " (" + str(myDict[j][2]) + ")")
-		f_per.append(myDict[j][1])
-
-	#graphing 
-	#display_d_f = False
-	if display_d_f == True:
-		ax = plt.subplot(1, 2, 1)
-		ax.barh(a_instrucs, a_per)
-		ax.set_xlabel("Percentage of A's")
-		ax.set_ylabel("Professors' Last Names")
-		ax.set_title(class_name)
-		ax.tick_params(axis='y', labelsize=6)
-
-		ax = plt.subplot(1, 2, 2)
-		ax.barh(f_instrucs, f_per)
-		ax.set_xlabel("Percentage of D / F")
-		ax.set_ylabel("Professors' Last Names")
-		ax.set_title(class_name)
-		ax.tick_params(axis='y', labelsize=6)
-		plt.tight_layout()
-		plt.show()
-		return
-	else:
-		fig, ax = plt.subplots()
-		ax.barh(a_instrucs, a_per)
-		ax.set_ylabel("Percentage of A's")
-		ax.set_xlabel("Professors' Last Names")
-		ax.set_title(class_name)
-		ax.tick_params(axis='y', labelsize=6)
-		plt.show()
-		return
-
+	graph_data(myDict, "Instructor", class_name, display_d_f)
+	
 
 def graph_data(myDict, y_label: str, title:str, display_d_f: bool):
 	sorted_a = sort_dict_by_value(myDict, key_func=lambda x: x[0])
