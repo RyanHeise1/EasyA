@@ -5,6 +5,7 @@ import os.path
 
 department_list = ["Biology", "Chemistry", "Computer and Information Sciences", "Human Physiology", "Mathematics", "Physics", "Psychology"]
 include_GS = 1 # variable indicating whether graduate student instructors are shown
+sort_by_prof = 0 # variable indicating whether to sort by professors or classes (0 is classes 1 is professors)
 type_of_graph_to_show = 1 # variable indicating which type of graph to show (1 for % As 0 for % Ds/Fs)
 
 # function called when search button is pressed
@@ -14,12 +15,12 @@ def search_button(event):
     classNumber = classNumbercombo.get()
     messagebox.showinfo(
         title="Searching",
-        message=f"Department: {departmentName}\nClass Level: {classLevel}\nClass Number: {classNumber}\nInclude GS: {include_GS}\nAs or Fs: {type_of_graph_to_show}"
+        message=f"Department: {departmentName}\nClass Level: {classLevel}\nClass Number: {classNumber}\nSort by Profs: {sort_by_prof}\nInclude GS: {include_GS}\nAs or Fs: {type_of_graph_to_show}"
     )
     return
 
 # function called when selecting a class level, gets all class numbers for current department at specific class level
-def set_class_numbers(event):
+def change_class_level(event):
     current_class_level = classLevelcombo.get()
     if (current_class_level == ""):
         classNumbercombo.config(values=[""])
@@ -29,13 +30,29 @@ def set_class_numbers(event):
         current_class_numbers[int(current_class_level)].insert(0, "")
         classNumbercombo.config(value=current_class_numbers[int(current_class_level)])
     classNumbercombo.set("")
+    change_class_numbers(event)
+    searchButton.focus()
+    return
+
+# function called when selecting a class number, modifies the ProfButton checkbox accordingly
+def change_class_numbers(event):
+    global sort_by_prof
+    current_class_number = classNumbercombo.get()
+    if (current_class_number == ""):
+        ProfButton.config(state="active")
+        ProfButton.deselect()
+        sort_by_prof = 0
+    else:
+        ProfButton.config(state="disabled")
+        ProfButton.select()
+        sort_by_prof = 1
     searchButton.focus()
     return
 
 # function called when changing current department, sets class level and class number to blank
 def change_departemnt(event):
     classLevelcombo.set("")
-    set_class_numbers(event)
+    change_class_level(event)
     return
 
 # function called when the radio buttons are used
@@ -54,6 +71,15 @@ def change_GS():
         include_GS = 0
     else:
         include_GS = 1
+    return
+
+# function called when the Prof checkbox is ticked or unticked
+def change_prof():
+    global sort_by_prof
+    if sort_by_prof:
+        sort_by_prof = 0
+    else:
+        sort_by_prof = 1
     return
 
 # main window configuration
@@ -91,12 +117,24 @@ classNumbercombo = ttk.Combobox(
     font=("Helvetica 15"),
     width=16
 )
-# GS selection checkbox and type of graph selector radio buttons
+# GS selection checkbox, sort by professor or class checkbox, and type of graph selector radio buttons
+ProfButton = Checkbutton(text="Search by Professors",
+    onvalue=1,
+    offvalue=0, 
+    font=("Helvetica 12 bold"), 
+    height=1,
+    bg="#007030", 
+    fg="#FEE11A", 
+    selectcolor="#007030", 
+    activebackground="#007030", 
+    activeforeground="#FEE11A", 
+    command=change_prof
+)
 GSButton = Checkbutton(text="Include GS Instructors",
     onvalue=1,
     offvalue=0, 
     font=("Helvetica 12 bold"), 
-    height=2,
+    height=1,
     bg="#007030", 
     fg="#FEE11A", 
     selectcolor="#007030", 
@@ -146,18 +184,19 @@ R2.deselect()
 
 # binding functions to events
 deptNamecombo.bind('<<ComboboxSelected>>', change_departemnt)
-classLevelcombo.bind('<<ComboboxSelected>>', set_class_numbers)
-classNumbercombo.bind("<<ComboboxSelected>>",lambda e: searchButton.focus())
+classLevelcombo.bind('<<ComboboxSelected>>', change_class_level)
+classNumbercombo.bind("<<ComboboxSelected>>", change_class_numbers)
 searchButton.bind("<Button-1>", search_button)
 
 # placing widgets
-label1.place(relx=.5, y=35, anchor=CENTER)
-label2.place(relx=.5, y=125, anchor=CENTER)
-label3.place(relx=.5, y=215, anchor=CENTER)
-deptNamecombo.place(relx=.5, y=70, anchor=CENTER)
-classLevelcombo.place(relx=.5, y=160, anchor=CENTER)
-classNumbercombo.place(relx=.5, y=250, anchor=CENTER)
-GSButton.place(x=65, y=275)
+label1.place(relx=.5, y=25, anchor=CENTER)
+deptNamecombo.place(relx=.5, y=60, anchor=CENTER)
+label2.place(relx=.5, y=105, anchor=CENTER)
+classLevelcombo.place(relx=.5, y=140, anchor=CENTER)
+label3.place(relx=.5, y=185, anchor=CENTER)
+classNumbercombo.place(relx=.5, y=220, anchor=CENTER)
+ProfButton.place(x=65, y=245)
+GSButton.place(x=65, y=280)
 R1.place(x=65, y=315)
 R2.place(x=65, y=345)
 searchButton.place(relx=.5, y=410, anchor=CENTER)
