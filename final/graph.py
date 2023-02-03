@@ -43,7 +43,7 @@ import parser as p
 
 # Globals
 
-def main(dep: str, level:str , classNum: str, allInstrucs: bool, list_dept_num: bool, display_d_f: bool = False, countClasses: bool = True):
+def main(dep: str, level:str , classNum: str, allInstrucs: bool, list_dept_num: bool, display_d_f: bool = False, countClasses: bool = False):
 	"""
 	Summary: 
 		- This function processes a query about course grades based on various 
@@ -63,7 +63,10 @@ def main(dep: str, level:str , classNum: str, allInstrucs: bool, list_dept_num: 
 	if level == None and classNum == None:
 		#we only have department name, go through all the classes
 		data = p.parseGradeData(dep, None, None)
-		all_class_graph(data, dep, display_d_f, allInstrucs, countClasses)
+		if list_dept_num:
+			department_graph(data, dep, level, display_d_f, allInstrucs, countClasses)
+		else:
+			all_class_graph(data, dep, display_d_f, allInstrucs, countClasses)
 
 	# Parse level in department
 	elif level != None and dep != None and classNum == None:
@@ -149,7 +152,8 @@ def department_graph(class_list, dep, level, display_d_f, allInstrucs, countClas
 	myDict = {}
 	# Loop over the list of classes (i is the class number ie 314)
 	for i in class_list:
-		class_data = p.parseGradeData(dep, i, None)
+		num = "".join([k for k in i if k.isdigit()])
+		class_data = p.parseGradeData(dep, num, None)
 		for j in class_data:
 			lname = j['instructor'].split(',')[0].strip()
 			fname = j['instructor'].split(',')[1].strip()
@@ -159,20 +163,20 @@ def department_graph(class_list, dep, level, display_d_f, allInstrucs, countClas
 			aprec = float(j['aprec'])
 
 			# Teacher name is already in dictionary. Add values to it
-			if i in myDict:
-				myDict[i][0] += aprec 			# a percentage
-				myDict[i][1] += total_failing 	# d/f percentage
-				myDict[i][2] += 1 				# number of classes
+			if num in myDict:
+				myDict[num][0] += aprec 			# a percentage
+				myDict[num][1] += total_failing 	# d/f percentage
+				myDict[num][2] += 1 				# number of classes
 
 			# first time this teacher has shown up (count is 1)
 			else:
 				# check if we want all instructors or just faculty 
 				if not allInstrucs and (j['instructor']) in p.getFacultyData(dep):
 					# just Faculty
-					myDict[i] = [aprec, total_failing, 1]
+					myDict[num] = [aprec, total_failing, 1]
 				elif allInstrucs:
 					# all instructors
-					myDict[i] = [aprec, total_failing, 1]
+					myDict[num] = [aprec, total_failing, 1]
 	myDict = average_dict(myDict)
 	graph_data(myDict, "Classes", f'All {dep} {level}-level', display_d_f, countClasses)
 
@@ -214,7 +218,6 @@ def instructor_graph(class_name, data, display_d_f, allInstrucs, countClasses):
 			# check if we want all instructors or just faculty 
 			if not allInstrucs and i['instructor'] in p.getFacultyData(''.join([i for i in class_name if not i.isdigit()])):
 				# just Faculty
-				print("test")
 				myDict[full_name] = [aprec, total_failing, 1]
 			elif allInstrucs:
 				# all instructors
@@ -325,11 +328,11 @@ def sort_dict_by_value(d, key_func, reverse=True):
 
 
 
-#main(dep, level , classNum, allInstrucs, list_dept_num, display_d_f)
+#main(dep, level, classNum, allInstrucs, list_dept_num, display_d_f, countClasses)
 
 # FUNCTIONAL REQUIREMENTS
 # 1a) A single class (such as "Math 111")
-#main("CIS", None, "111", True, False, False)
+main("CIS", None, None, True, True, False, False)
 
 # 1b) A single department (such as "Math")
 #main("MATH", None, None, True, False, False)
