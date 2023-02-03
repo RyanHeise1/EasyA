@@ -166,7 +166,7 @@ def upload_file():
     # Check if the file extension is not .js
     if file_extension != '.js':
         # Show an error message if the file extension is not .js
-        messagebox.showerror("Invalid file type", "Please select a .js or .csv file.")
+        messagebox.showerror("Invalid file type", "Please select a .js file.")
         return
 
     # Call the ParseJSFile function with the selected file path as the argument
@@ -189,8 +189,8 @@ The following lines of code set up Graphical User Interface for uploading new da
 """
 root = tk.Tk()
 
-# Label 'instructions' that displays the text "Select a .js or .csv file to upload:"
-instructions = tk.Label(root, text='Select a .js or .csv file to upload:')
+# Label 'instructions' that displays the text "Select a .js file to upload:"
+instructions = tk.Label(root, text='Select a .js file to upload:')
 instructions.pack()
 
 # label 'note' that displays a note about the expected headers of the file to be uploaded.
