@@ -27,22 +27,22 @@ This function returns a list of faculty names for such department. Each faculty 
 If a part of the name has a ".", this is treated as a middle name and is removed.
 
 Note if inputted other URL's than from what is specified as above:
-    The scraper pulls from the html of the page and searches from containers of the p flag named "facultylist"
+    The scraper pulls from the html of the page and searches from containers of name "facultytextcontainer"
     If no such container exists, this function will return None
 """
 def parseFaculty(URL: str) -> list:
     page = requests.get(URL)
 
     # all faculty
-    # soup = BeautifulSoup(page.text, "html.parser")
-    # container = soup.find("div", {"id": "facultytextcontainer"})
-    # lines = container.findAll("p")
-
-    # just what is under faculty
-    text = page.text.split('Emeriti')
-    soup = BeautifulSoup(text[0], "html.parser")
+    soup = BeautifulSoup(page.text, "html.parser")
     container = soup.find("div", {"id": "facultytextcontainer"})
     lines = container.findAll("p")
+
+    # just what is under faculty
+    # text = page.text.split('Emeriti')
+    # soup = BeautifulSoup(text[0], "html.parser")
+    # container = soup.find("div", {"id": "facultytextcontainer"})
+    # lines = container.findAll("p")
 
     professors = []
 

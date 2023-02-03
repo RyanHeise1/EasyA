@@ -2,8 +2,6 @@ import unittest
 import parser
 
 class TestStringMethods(unittest.TestCase):
-    #https://docs.python.org/3/library/unittest.html
-
 
     def testParserAllprovided(self):
         returnVal = [{'TERM_DESC': 'Fall 2013', 'aprec': '20.0', 'bprec': '28.0', 'cprec': '32.0', 'crn': '14528', 'dprec': '4.0',

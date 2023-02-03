@@ -109,5 +109,3 @@ def getFacultyData(department: str):
             return gradeData
         else:
             return gradeData[department]
-
-print(parseGradeData("MATH", "", None))
