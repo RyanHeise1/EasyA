@@ -42,10 +42,8 @@ import matplotlib.pyplot as plt
 import parser as p 
 
 # Globals
-FACULTY = p.getFaculty() #this is sooo slow :(
-# FACULTY = {}
 
-def main(dep: str, level:str , classNum: str, allInstrucs: bool, list_dept_num: bool, display_d_f: bool = False):
+def main(dep: str, level:str , classNum: str, allInstrucs: bool, list_dept_num: bool, display_d_f: bool = False, countClasses: bool = True):
 	"""
 	Summary: 
 		- This function processes a query about course grades based on various 
@@ -65,7 +63,7 @@ def main(dep: str, level:str , classNum: str, allInstrucs: bool, list_dept_num: 
 	if level == None and classNum == None:
 		#we only have department name, go through all the classes
 		data = p.parseGradeData(dep, None, None)
-		all_class_graph(data, dep, display_d_f, allInstrucs)
+		all_class_graph(data, dep, display_d_f, allInstrucs, countClasses)
 
 	# Parse level in department
 	elif level != None and dep != None and classNum == None:
@@ -73,14 +71,14 @@ def main(dep: str, level:str , classNum: str, allInstrucs: bool, list_dept_num: 
 		allC = p.getClassNumbers(dep)
 		data = allC[int(level)]
 		if list_dept_num:
-			department_graph(data, dep, level, display_d_f, allInstrucs)
+			department_graph(data, dep, level, display_d_f, allInstrucs, countClasses)
 		else:
 			# we have the level of the department
 			dat = []
 			for c in data:
 				dat += p.parseGradeData(dep, c, None)
 			#plug into grapher
-			instructor_graph(dep+' '+level+'-level', dat, display_d_f, allInstrucs, )
+			instructor_graph(dep+level, dat, display_d_f, allInstrucs, countClasses)
 
 	# Parse individual class
 	elif classNum != None and dep != None and level == None:
@@ -88,14 +86,14 @@ def main(dep: str, level:str , classNum: str, allInstrucs: bool, list_dept_num: 
 		#get data
 		d = p.parseGradeData(dep, classNum, None)
 		#plug into aPer
-		instructor_graph(dep + classNum, d, display_d_f, allInstrucs)
+		instructor_graph(dep + classNum, d, display_d_f, allInstrucs, countClasses)
 	else:
 		print("ERROR: Invalid querry")
 
 # ------------------------------------------------------------------
 #				FUNCTIONAL REQUIREMENT GRAPHS
 # ------------------------------------------------------------------
-def all_class_graph(class_list, dep, display_d_f, allInstrucs):
+def all_class_graph(class_list, dep, display_d_f, allInstrucs, countClasses):
 	"""
 	Summary: 
 		- Displays graph with all classes in a department where the y-axis 
@@ -125,16 +123,16 @@ def all_class_graph(class_list, dep, display_d_f, allInstrucs):
 			# first time this teacher has shown up (count is 1)
 			else:
 				# check if we want all instructors or just faculty 
-				if not allInstrucs and (full_name) in FACULTY[dep]:
+				if not allInstrucs and (i['instructor']) in p.getFacultyData(dep):
 					# just Faculty
 					myDict[full_name] = [aprec, total_failing, 1]
 				elif allInstrucs:
 					# all instructors
 					myDict[full_name] = [aprec, total_failing, 1]
 	myDict = average_dict(myDict)
-	graph_data(myDict, "Instructor", f'All {dep} Classes', display_d_f)
+	graph_data(myDict, "Instructor", f'All {dep} Classes', display_d_f, countClasses)
 
-def department_graph(class_list, dep, level, display_d_f, allInstrucs):
+def department_graph(class_list, dep, level, display_d_f, allInstrucs, countClasses):
 	"""
 	Summary: 
 		- Displays graph with all classes in a specified level where the 
@@ -169,17 +167,17 @@ def department_graph(class_list, dep, level, display_d_f, allInstrucs):
 			# first time this teacher has shown up (count is 1)
 			else:
 				# check if we want all instructors or just faculty 
-				if not allInstrucs and (full_name) in FACULTY[dep]:
+				if not allInstrucs and (j['instructor']) in p.getFacultyData(dep):
 					# just Faculty
 					myDict[i] = [aprec, total_failing, 1]
 				elif allInstrucs:
 					# all instructors
 					myDict[i] = [aprec, total_failing, 1]
 	myDict = average_dict(myDict)
-	graph_data(myDict, "Classes", f'All {dep} {level}-level', display_d_f)
+	graph_data(myDict, "Classes", f'All {dep} {level}-level', display_d_f, countClasses)
 
 
-def instructor_graph(class_name, data, display_d_f, allInstrucs):
+def instructor_graph(class_name, data, display_d_f, allInstrucs, countClasses):
 	"""
 	Summary: 
 		- Displays graph with all professors who teach a specified class 
@@ -214,8 +212,9 @@ def instructor_graph(class_name, data, display_d_f, allInstrucs):
 		# first time this teacher has shown up (count is 1)
 		else:
 			# check if we want all instructors or just faculty 
-			if not allInstrucs and (full_name) in FACULTY[''.join([i for i in class_name if not i.isdigit()])]:
+			if not allInstrucs and i['instructor'] in p.getFacultyData(''.join([i for i in class_name if not i.isdigit()])):
 				# just Faculty
+				print("test")
 				myDict[full_name] = [aprec, total_failing, 1]
 			elif allInstrucs:
 				# all instructors
@@ -223,14 +222,14 @@ def instructor_graph(class_name, data, display_d_f, allInstrucs):
 
 	myDict = average_dict(myDict)
 	if allInstrucs:
-		graph_data(myDict, "Instructor", f'All {class_name}', display_d_f)
+		graph_data(myDict, "Instructor", f'All {class_name}', display_d_f, countClasses)
 	else:
-		graph_data(myDict, "Instructor", class_name, display_d_f)
+		graph_data(myDict, "Instructor", class_name, display_d_f, countClasses)
 	
 # ------------------------------------------------------------------
 #						CREATE GRAPHS
 # ------------------------------------------------------------------
-def graph_data(myDict, y_label: str, title:str, display_d_f: bool):
+def graph_data(myDict, y_label: str, title:str, display_d_f: bool, countClasses: bool):
 	"""
 	Summary: 
 		- Graphs data using matplotlib
@@ -252,27 +251,18 @@ def graph_data(myDict, y_label: str, title:str, display_d_f: bool):
 
 	#add how many classes this professors done to name 'a' grades
 	for i in sorted_a:
-		a_data.append(i.split(" ")[-1] + " (" + str(myDict[i][2]) + ")")
+		numClasses = " (" + str(myDict[i][2]) + ")"
+		a_data.append(i + (numClasses if countClasses else ''))
 		a_per.append(myDict[i][0])
 	#add how many classes this professors done to name for 'd/f' grades
 	for j in sorted_f:
-		f_data.append(j.split(" ")[-1] + " (" + str(myDict[j][2]) + ")")
+		numClasses = " (" + str(myDict[i][2]) + ")"
+		f_data.append(j + (numClasses if countClasses else ''))
 		f_per.append(myDict[j][1])
 
 	# Check if user wanted to display 2 graphs
 	if display_d_f:
-		# Create 2 graphs and plot
-
-		# First graph will be the %A's on the left side
-		ax = plt.subplot(1, 2, 1)
-		ax.barh(a_data, a_per)
-		ax.set_xlabel("Percentage of A's")
-		ax.set_ylabel(y_label)
-		ax.set_title(title)
-		ax.tick_params(axis='y', labelsize=6)
-
-		# 2nd graph will be %d/f on the right
-		ax = plt.subplot(1, 2, 2)
+		fig, ax = plt.subplots()
 		ax.barh(f_data, f_per)
 		ax.set_xlabel("Percentage of D / F")
 		ax.set_ylabel(y_label)
@@ -339,19 +329,19 @@ def sort_dict_by_value(d, key_func, reverse=True):
 
 # FUNCTIONAL REQUIREMENTS
 # 1a) A single class (such as "Math 111")
-main("CIS", None, "111", False, False, False)
+#main("CIS", None, "111", True, False, False)
 
 # 1b) A single department (such as "Math")
 #main("MATH", None, None, True, False, False)
 
 # 1c) All classes of a particular level within a department (such as "All Math 100-level Classes") 
 #	  (This should list instructor names rather than class number)
-#	main("CIS", "100", None, True, False, True)
+# main("CIS", "100", None, True, False, False, False)
 
 
 # 2a) All classes of a particular level within a department (such as "All Math 100-level Classes")
 #     (This should list class number rather than instructor name)
-#		main("CIS", "100", None, False, True, False)
+# main("CIS", "100", None, False, True, False, False)
 
 # 3a) "All Instructors" vs "Regular Faculty" (all instructors is the default)
 		# DONE with allInstrucs argument in main()
