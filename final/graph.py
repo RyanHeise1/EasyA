@@ -39,7 +39,7 @@ NOTE: There could be a bug the way we are storing professor names in dict. We st
 
 # Imports
 import matplotlib.pyplot as plt
-import pparser as p 
+import parser as p 
 
 # Globals
 FACULTY = p.getFaculty() #this is sooo slow :(
@@ -61,36 +61,36 @@ def main(dep: str, level:str , classNum: str, allInstrucs: bool, list_dept_num: 
 	Return: 
 		- None
 	"""
-		# Parse all classes in department
-		if level == None and classNum == None:
-			#we only have department name, go through all the classes
-			data = p.parseGradeData(dep, None, None)
-			all_class_graph(data, dep, display_d_f, allInstrucs)
+	# Parse all classes in department
+	if level == None and classNum == None:
+		#we only have department name, go through all the classes
+		data = p.parseGradeData(dep, None, None)
+		all_class_graph(data, dep, display_d_f, allInstrucs)
 
-		# Parse level in department
-		elif level != None and dep != None and classNum == None:
-			# we have the level of the department
-			allC = p.getClassNumbers(dep)
-			data = allC[int(level)]
-			if list_dept_num:
-				department_graph(data, dep, level, display_d_f, allInstrucs)
-			else:
-				# we have the level of the department
-				dat = []
-				for c in data:
-					dat += p.parseGradeData(dep, c, None)
-				#plug into grapher
-				instructor_graph(dep+' '+level+'-level', dat, display_d_f, allInstrucs, )
-
-		# Parse individual class
-		elif classNum != None and dep != None and level == None:
-			# we have department and class number
-			#get data
-			d = p.parseGradeData(dep, classNum, None)
-			#plug into aPer
-			instructor_graph(dep + classNum, d, display_d_f, allInstrucs)
+	# Parse level in department
+	elif level != None and dep != None and classNum == None:
+		# we have the level of the department
+		allC = p.getClassNumbers(dep)
+		data = allC[int(level)]
+		if list_dept_num:
+			department_graph(data, dep, level, display_d_f, allInstrucs)
 		else:
-			print("ERROR: Invalid querry")
+			# we have the level of the department
+			dat = []
+			for c in data:
+				dat += p.parseGradeData(dep, c, None)
+			#plug into grapher
+			instructor_graph(dep+' '+level+'-level', dat, display_d_f, allInstrucs, )
+
+	# Parse individual class
+	elif classNum != None and dep != None and level == None:
+		# we have department and class number
+		#get data
+		d = p.parseGradeData(dep, classNum, None)
+		#plug into aPer
+		instructor_graph(dep + classNum, d, display_d_f, allInstrucs)
+	else:
+		print("ERROR: Invalid querry")
 
 # ------------------------------------------------------------------
 #				FUNCTIONAL REQUIREMENT GRAPHS
@@ -339,7 +339,7 @@ def sort_dict_by_value(d, key_func, reverse=True):
 
 # FUNCTIONAL REQUIREMENTS
 # 1a) A single class (such as "Math 111")
-#		main("CIS", None, "111", False, False, False)
+main("CIS", None, "111", False, False, False)
 
 # 1b) A single department (such as "Math")
 #main("MATH", None, None, True, False, False)
