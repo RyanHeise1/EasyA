@@ -6,8 +6,8 @@ import csv
 import shutil
 import json
 
-""" ParseJSFile(filepath: str):
-    Takes in the file, 'filepath' and constructs it into a .js file that we can then pull data from
+""" ParseJSFile(filename: str):
+    Takes in the file, 'filename' and constructs it into a .js file that we can then pull data from
 
     - Parameters
         filepath is the name of the file that the user has uploaded (i.e. /Users/Lauren/Desktop/gradedata.js)
@@ -37,7 +37,7 @@ def ParseJSFile(filepath):
         return
 
 
-""" check_header(filenmae: str):
+""" check_header(filename: str):
     Takes in the file, 'filename' and checks the headers are the expected headers
 
     - Parameters
