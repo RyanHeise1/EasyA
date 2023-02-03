@@ -8,7 +8,7 @@
             "crn": "32641",
             "dprec": "0.0",
             "fprec": "0.0",
-            "instructor": "Leahy, John F."
+            "instructor": "Leahy, John"
         },
         {
             "TERM_DESC": "Term YYYY",
