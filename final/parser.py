@@ -54,7 +54,7 @@ def parseGradeData(department: str, number: str, professor: str):
         for clas in gradeData:
             index = [i for i in range(0, len(clas)) if clas[i].isdigit()]
             if department == clas[0:index[0]]:
-                returnVal[clas] = gradeData[clas]
+                returnVal[clas[index[0]:]] = gradeData[clas]
     # invalid input
     else:
         raise Exception("Must supply a department, department and number, or department and number and professor")
