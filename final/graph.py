@@ -332,7 +332,7 @@ def sort_dict_by_value(d, key_func, reverse=True):
 
 # FUNCTIONAL REQUIREMENTS
 # 1a) A single class (such as "Math 111")
-main("CIS", None, None, True, True, False, False)
+#main("CIS", None, None, True, True, False, False)
 
 # 1b) A single department (such as "Math")
 #main("MATH", None, None, True, False, False)
