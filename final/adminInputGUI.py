@@ -69,7 +69,7 @@ def check_headers(filename):
                     # compare the headers with the expected headers
                     if headers != expected_headers:
                         # show an error message if the headers don't match
-                        messagebox.showerror("Incorrect headers. Expected headers: {}".format(expected_headers))
+                        messagebox.showerror("Incorrect Headers", "Incorrect Headers\nExpected headers:\n{}".format(expected_headers))
                         # return False if the headers don't match
                         return False
         # return True if all headers match the expected headers
@@ -170,7 +170,7 @@ The following lines of code set up Graphical User Interface for uploading new da
 root = tk.Tk()
 
 # Label 'instructions' that displays the text "Select a .js or .csv file to upload:"
-instructions = tk.Label(root, text='Select a .js or .csv file to upload:')
+instructions = tk.Label(root, text='Select a .js file to upload:')
 instructions.pack()
 
 # label 'note' that displays a note about the expected headers of the file to be uploaded.
