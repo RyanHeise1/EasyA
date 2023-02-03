@@ -1,3 +1,9 @@
+"""
+    Returns all that which
+
+    both gui and graphs
+"""
+
 import json
 
 """ parseGradeData(department: str, number: str, professor: str):
@@ -46,7 +52,8 @@ def parseGradeData(department: str, number: str, professor: str):
     elif department:  # returns a dictionary (of lists)
         returnVal = {}
         for clas in gradeData:
-            if department in clas:
+            index = [i for i in range(0, len(clas)) if clas[i].isdigit()]
+            if department == clas[0:index[0]]:
                 returnVal[clas] = gradeData[clas]
     # invalid input
     else:
@@ -96,6 +103,9 @@ def getClassNumbers(department: str) -> dict:
 
     return class_numbers
 
+def getDepartmentNames():
+    return ["BI", "CH", "CIS", "HPHY", "MATH", "PHYS", "PSY"]
+
 """ getFacultyData(department)
     Pulls from 'Faculty.js', and returns a list of faculty names from a given department. If no department is provided
     (set to None), a dictionary is return with the keys being the department name, and the values being the list 
@@ -109,3 +119,5 @@ def getFacultyData(department: str):
             return gradeData
         else:
             return gradeData[department]
+
+print(parseGradeData("CH", None, None))
