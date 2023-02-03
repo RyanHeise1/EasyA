@@ -148,12 +148,12 @@ def department_graph(class_list, dep, level, display_d_f, allInstrucs, countClas
 	Return: 
 		- None
 	"""
+
 	# mydict = {class_num_1: [aperc, d+fperc, number_of_classes], class_num_2: [...]}
 	myDict = {}
 	# Loop over the list of classes (i is the class number ie 314)
 	for i in class_list:
-		num = "".join([k for k in i if k.isdigit()])
-		class_data = p.parseGradeData(dep, num, None)
+		class_data = p.parseGradeData(dep, i, None)
 		for j in class_data:
 			lname = j['instructor'].split(',')[0].strip()
 			fname = j['instructor'].split(',')[1].strip()
@@ -163,23 +163,25 @@ def department_graph(class_list, dep, level, display_d_f, allInstrucs, countClas
 			aprec = float(j['aprec'])
 
 			# Teacher name is already in dictionary. Add values to it
-			if num in myDict:
-				myDict[num][0] += aprec 			# a percentage
-				myDict[num][1] += total_failing 	# d/f percentage
-				myDict[num][2] += 1 				# number of classes
+			if i in myDict:
+				myDict[i][0] += aprec 			# a percentage
+				myDict[i][1] += total_failing 	# d/f percentage
+				myDict[i][2] += 1 				# number of classes
 
 			# first time this teacher has shown up (count is 1)
 			else:
 				# check if we want all instructors or just faculty 
 				if not allInstrucs and (j['instructor']) in p.getFacultyData(dep):
 					# just Faculty
-					myDict[num] = [aprec, total_failing, 1]
+					myDict[i] = [aprec, total_failing, 1]
 				elif allInstrucs:
 					# all instructors
-					myDict[num] = [aprec, total_failing, 1]
+					myDict[i] = [aprec, total_failing, 1]
 	myDict = average_dict(myDict)
-	graph_data(myDict, "Classes", f'All {dep} {level}-level', display_d_f, countClasses)
-
+	if level != None:
+		graph_data(myDict, "Classes", f'All {dep} {level}-level', display_d_f, countClasses)
+	else:
+		graph_data(myDict, "Classes", f'All {dep} Classes', display_d_f, countClasses)
 
 def instructor_graph(class_name, data, display_d_f, allInstrucs, countClasses):
 	"""
@@ -332,7 +334,7 @@ def sort_dict_by_value(d, key_func, reverse=True):
 
 # FUNCTIONAL REQUIREMENTS
 # 1a) A single class (such as "Math 111")
-main("CIS", None, None, True, False, False, False)
+# main("BI", None, None, True, True, False, False)
 
 # 1b) A single department (such as "Math")
 #main("MATH", None, None, True, False, False)
