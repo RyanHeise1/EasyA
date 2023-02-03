@@ -39,7 +39,7 @@ NOTE: There could be a bug the way we are storing professor names in dict. We st
 
 # Imports
 import matplotlib.pyplot as plt
-import parser as p 
+import parser_1 as p 
 
 # Globals
 
