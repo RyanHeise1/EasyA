@@ -44,15 +44,13 @@ def parseFaculty(URL: str) -> list:
         The scraper pulls from the html of the page and searches from containers of name "facultytextcontainer"
         If no such container exists, this function will return an empty list
     """
-    #get the contents from URL and reformats
-    page = requests.get(URL)
+
+    page = requests.get(URL)    #get the contents from URL
     soup = BeautifulSoup(page.text, "html.parser")
 
     #----- all faculty-----
-    # all the faculty names is stored facultytextcontainer
-    container = soup.find("div", {"id": "facultytextcontainer"})
-    # each individual faculty name is in a <p>
-    lines = container.findAll("p")
+    container = soup.find("div", {"id": "facultytextcontainer"})  # the faculty names are stored in facultytextcontainer
+    lines = container.findAll("p")      # each individual faculty name is in a <p>
 
     # ---------doesn't include emeriti section of faculty------
     # text = page.text.split('Emeriti')
@@ -60,27 +58,21 @@ def parseFaculty(URL: str) -> list:
     # container = soup.find("div", {"id": "facultytextcontainer"})
     # lines = container.findAll("p")
 
-    # will hold all the faculty names
-    professors = []
+    professors = [] # will hold all the faculty names
 
     #------------iterates through each paragraph in webscraper--------------
     for line in lines:
         try:
             # each paragraph is the faculty name, ",", and info about the faculty
-            # name is the faculty name
-            name, _ = line.text.split(",", 1)
+            name, _ = line.text.split(",", 1)   # name is the faculty name
         except:
             # line is not a person's name
             continue
         else:
-            # verified such data matches to the appropriate names in gradeData.js
+            # -------------reformatting name without middle name------------------------
+            splitname = name.split(" ")     #list of each name in full name
+            cleanname = []      #will hold name without middle name
 
-            #holds each name in full name
-            splitname = name.split(" ")
-
-            #-------------reformatting name without middle name------------------------
-            #will hold name without middle name
-            cleanname = []
             for n in splitname:
                 # removes middle name (always formatted as "X."), "Jr." suffixes, or edge cases (i.e: Brett "Brick")
                 if ("." in n) or ('"' in n) or ('(' in n):
@@ -121,8 +113,8 @@ def getFaculty() -> dict:
              ("PHYS", "https://web.archive.org/web/20140901091007/http://catalog.uoregon.edu/arts_sciences/physics/#facultytext"),
              ("PSY", "https://web.archive.org/web/20141101200122/http://catalog.uoregon.edu/arts_sciences/psychology/#facultytext")]
 
-    #holds the dictionary of the faculty for each department
-    professors = {}
+    professors = {}     #will hold the faculty for each department
+
     #----------------calls the scraper on all of the natural sciences---------------
     for subject, URL in sites:
         #for natural science departments that have no URL in wayback machine (these departments didn't exist in 2015)
@@ -142,14 +134,13 @@ def getFaculty() -> dict:
 
 if __name__ == '__main__':
     # inserts the faculty data (which is pulled from getFaculty()) and writes it to Faculty.js as a json file
-    data = getFaculty()
+
+    data = getFaculty()     #dictionary of professor names
     #checks that there were no errors in pulling the data
     if data != -1:
         with open('Faculty.js', 'w') as f:
             print("Writing to 'Faculty.js'..................")
-            # puts data into 'Faculty.js'
-            json_object = json.dumps(data, indent=4)
-
-            f.write(json_object)
+            json_object = json.dumps(data, indent=4)      #formats dictionary into json object
+            f.write(json_object)    # puts data into 'Faculty.js'
             f.close()
             print("Webscraper was successful")

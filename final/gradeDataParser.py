@@ -58,37 +58,29 @@ def parseGradeData(department: str, number: str, professor: str):
 
     """
     f = open('gd.js')
-    # reads the gd.js from a json file to a dictionary
-    gradeData = json.load(f)
+    gradeData = json.load(f)    # reads the gd.js from a json file to a dictionary
 
+    returnVal = []      # will hold return value
 
-    returnVal = []
-    # inputs all department, number, prof (i.e: MATH111 with Smith)
-    if department and professor:  # return list of dictionaries
-        for term in gradeData[department + number]:
+    if department and professor:    # inputs department, number, prof (i.e: MATH111 with Smith) -> return list of dicts
+        for term in gradeData[department + number]: #iterates through class name of that specified
             if term["instructor"] == professor:
                 returnVal.append(term)
 
-    # inputs specific class, (i.e: MATH111)
-    elif department and number:  # returns a dictionary (of lists)
+    elif department and number:  # inputs specific class, (i.e: MATH111) -> returns a dictionary (of lists)
         returnVal = gradeData[department + number]
-    # inputs only department (i.e: MATH)
-    elif department:  # returns a dictionary (of lists)
+    elif department:  # inputs only department (i.e: MATH) -> returns a dictionary (of lists)
         returnVal = {}
-        for clas in gradeData:
-            # will store the index of where the department name ends in the class name
-                # previously had done startswith(department), but some department names overlap (ex: CH, CHN)
-                # which would give invalid class data
-            index = -1
+        for clas in gradeData:  #iterates through class names
+            index = -1      # will store the index of where the department name ends in the class name
+                                # previously had done startswith(department), but some department names overlap (ex: CH, CHN)
+                                # which would give invalid class data
             for i in range(len(clas)):
-                #checks if character is a digit -> is the start of the department name
-                if clas[i].isdigit():
+                if clas[i].isdigit():   #checks if character is a digit -> is the start of the department name
                     index = i
                     break
-            # validates that it is a real class name, (if not, would give an ambigious key error)
-            if index == -1: Exception("Invalid class name. Please contact your administrator to fix the data")
-            #appends if correct department
-            if department == clas[0:index]:
+
+            if department == clas[0:index]:     #appends data of class if correct department
                 returnVal[clas[index:]] = gradeData[clas]
     # invalid input
     else:
@@ -112,12 +104,11 @@ def getClassNumbers(department: str) -> dict:
 
         Used by easy_A_GUI.py
     """
-    #loads 'gd.js' to dictionary
-    f = open('gd.js')
-    gradeData = json.load(f)
 
-    # stores the class numbers for a department, and separates by level
-    class_numbers = {}
+    f = open('gd.js')
+    gradeData = json.load(f)    #loads 'gd.js' to dictionary
+
+    class_numbers = {}      # stores the class numbers for a department, and separates by level
     class_numbers[100] = []
     class_numbers[200] = []
     class_numbers[300] = []
@@ -128,8 +119,7 @@ def getClassNumbers(department: str) -> dict:
 
     #parses through classes in 'gd.js'
     for clas in gradeData:
-        if department in clas:
-            #checks what level the class is
+        if department in clas:   #checks what level the class is
             for l in levels:
                 if clas.startswith(department + l):
                     # with the full class name (i.e. MATH111)
@@ -159,9 +149,9 @@ def getFacultyData(department: str):
         Used by: course_grade_visualizer.py
     """
     with open('Faculty.js', 'r') as f:
-        gradeData = json.load(f)
+        gradeData = json.load(f)    #loads Faculty.js as a dictionary
         f.close()
-        if not department:
+        if not department:  #if no department specified, return all data
             return gradeData
         else:
             return gradeData[department]
