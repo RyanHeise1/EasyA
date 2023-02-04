@@ -1,9 +1,23 @@
+"""
+    Name: TestCases.py
+    Created: 1/28/2023
+    Author: Katherine Smirnov
+
+    Test Cases for gradeDataParser.py and WebScraper.py
+
+"""
+
+
 import unittest
 import parser
 
 class TestStringMethods(unittest.TestCase):
 
     def testParserAllprovided(self):
+        """ testParserAllprovided()
+                Tests parseGradeData() will all 3 parameters
+        """
+
         returnVal = [{'TERM_DESC': 'Fall 2013', 'aprec': '20.0', 'bprec': '28.0', 'cprec': '32.0', 'crn': '14528', 'dprec': '4.0',
           'fprec': '16.0', 'instructor': 'Arbo, Matthew David'},
          {'TERM_DESC': 'Spring 2014', 'aprec': '26.7', 'bprec': '13.3', 'cprec': '33.3', 'crn': '36118',
@@ -11,14 +25,21 @@ class TestStringMethods(unittest.TestCase):
 
         assert parser.parseGradeData("MATH", "111", "Arbo, Matthew David") == returnVal
 
+
     def testParser2provided(self):
+        """ testParser2provided()
+                    Tests parseGradeData() will class name
+        """
+
         returnVal = {'TERM_DESC': 'Spring 2014', 'aprec': '38.9', 'bprec': '19.4', 'cprec': '22.2', 'crn': '38531', 'dprec': '11.1', 'fprec': '8.3', 'instructor': 'Sinclair, Christopher Dean'}, {'TERM_DESC': 'Spring 2015', 'aprec': '25.0', 'bprec': '29.5', 'cprec': '29.5', 'crn': '33691', 'dprec': '6.8', 'fprec': '9.1', 'instructor': 'Pazdan-Siudeja, Liliana Anna'}, {'TERM_DESC': 'Spring 2016', 'aprec': '29.5', 'bprec': '36.4', 'cprec': '22.7', 'crn': '33652', 'dprec': '9.1', 'fprec': '2.3', 'instructor': 'Pazdan-Siudeja, Liliana Anna'}
         assert parser.parseGradeData("MATH", "343", "") == returnVal
 
-    """ testWebScraper()
-        Verifies 'Faculty.js' holds the correct names from the Wayback Machine, and are correctly formatted.
-    """
+
     def testWebScraper(self):
+        """ testWebScraper()
+                Verifies 'Faculty.js' holds the correct names from the Wayback Machine, and are correctly formatted without
+                    middle name.
+        """
         #what the names would be from the wayback machine
         returnVal = {
             "BI": [
