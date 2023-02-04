@@ -1,9 +1,7 @@
 import tkinter as tk
-from tkinter import *
 from tkinter import filedialog
 import tkinter.messagebox as messagebox
 import os
-import csv
 import shutil
 import json
 
@@ -87,7 +85,7 @@ def check_headers(filename):
                     # compare the headers with the expected headers
                     if headers != expected_headers:
                         # show an error message if the headers don't match
-                        messagebox.showerror("Incorrect headers. Expected headers: {}".format(expected_headers))
+                        messagebox.showerror("Incorrect Headers", "Incorrect headers. Expected headers: {}".format(expected_headers))
                         # return False if the headers don't match
                         return False
         # return True if all headers match the expected headers
@@ -95,6 +93,7 @@ def check_headers(filename):
     except:
         # if the file doesn't contain valid JSON data, print an error message
         print("Error: The file does not contain valid JSON data.")
+        return False
 
 
 def no_middle_init(filename):
@@ -167,7 +166,7 @@ def upload_file():
     # Check if the file extension is not .js
     if file_extension != '.js':
         # Show an error message if the file extension is not .js
-        messagebox.showerror("Invalid file type", "Please select a .js or .csv file.")
+        messagebox.showerror("Invalid file type", "Please select a .js file.")
         return
 
     # Call the ParseJSFile function with the selected file path as the argument
@@ -202,8 +201,8 @@ root.resizable(False, False)
 # set background color
 root.config(bg="#007030")
 
-# Label 'instructions' that displays the text "Select a .js or .csv file to upload:"
-instructions = tk.Label(root, text='Select a .js or .csv file to upload:',
+# Label 'instructions' that displays the text "Select a .js file to upload:"
+instructions = tk.Label(root, text='Select a .js file to upload:',
                         font=("Helvetica 12 bold"),
                         bg="#007030",
                         fg="#FEE11A",
