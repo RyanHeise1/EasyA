@@ -39,9 +39,8 @@ NOTE: There could be a bug the way we are storing professor names in dict. We st
 
 # Imports
 import matplotlib.pyplot as plt
+from matplotlib.widgets import Slider
 import parser_1 as p 
-
-# Globals
 
 def main(dep: str, level:str , classNum: str, allInstrucs: bool, list_dept_num: bool, display_d_f: bool = False, countClasses: bool = False):
 	"""
@@ -227,14 +226,14 @@ def instructor_graph(class_name, data, display_d_f, allInstrucs, countClasses):
 
 	myDict = average_dict(myDict)
 	if allInstrucs:
-		graph_data(myDict, "Instructor", f'All {class_name}', display_d_f, countClasses)
+		graph_data(myDict, "Instructor", f'All {class_name} Instructors', display_d_f, countClasses)
 	else:
 		graph_data(myDict, "Instructor", class_name, display_d_f, countClasses)
 	
 # ------------------------------------------------------------------
 #						CREATE GRAPHS
 # ------------------------------------------------------------------
-def graph_data(myDict, y_label: str, title:str, display_d_f: bool, countClasses: bool):
+def graph_data(myDict, x_label: str, title:str, display_d_f: bool, countClasses: bool):
 	"""
 	Summary: 
 		- Graphs data using matplotlib
@@ -267,25 +266,134 @@ def graph_data(myDict, y_label: str, title:str, display_d_f: bool, countClasses:
 
 	# Check if user wanted to display 2 graphs
 	if display_d_f:
-		fig, ax = plt.subplots()
-		ax.barh(f_data, f_per)
-		ax.set_xlabel("Percentage of D / F")
-		ax.set_ylabel(y_label)
-		ax.set_title(title)
-		ax.tick_params(axis='y', labelsize=6)
-		plt.tight_layout()
-		plt.show()
-		return
+		if len(f_data) > 50:
+			graph_w_scroll(f_data, f_per, title, x_label, "Percentage of D / F")
+			return
+		else:
+			fig, ax = plt.subplots(figsize=(10,6))
+			ax.bar(f_data, f_per)
+			ax.set_xlabel(x_label)
+			ax.set_ylabel("Percentage of D / F")
+			ax.set_title(title)
+			ax.tick_params(axis='x', labelsize=6, rotation=45)
+			# add height to the bars
+			rect = ax.patches
+			for rect, f_per in zip(rect, f_per):
+				height = rect.get_height()
+				if height >= 4:
+					ax.text(
+			            rect.get_x() + rect.get_width() / 2,
+			            height - 0.01,
+			            round(float(f_per),1),
+			            horizontalalignment='center',
+			            verticalalignment='top',
+			            color='White'
+					)
+				else:
+					ax.text(
+			            rect.get_x() + rect.get_width() / 2,
+			            height + 0.01,
+			            round(float(f_per),1),
+			            horizontalalignment='center',
+			            verticalalignment='bottom',
+			            color='Black'
+					)
+			plt.tight_layout()
+			#plt.figure(figsize=(10,6))
+			plt.show()
+			return
 	else:
-		# Create one graph
-		fig, ax = plt.subplots()
-		ax.barh(a_data, a_per)
-		ax.set_xlabel("Percentage of A's")
-		ax.set_ylabel(y_label)
-		ax.set_title(title)
-		ax.tick_params(axis='y', labelsize=6)
-		plt.show()
-	return
+		if len(a_data) > 50:
+			graph_w_scroll(a_data, a_per, title, x_label, "Percentage of A's")
+			return
+		else:
+			# Create one graph
+			fig, ax = plt.subplots(figsize=(10,6))
+			ax.bar(a_data, a_per)
+			ax.set_xlabel(x_label)
+			ax.set_ylabel("Percentage of A's")
+			ax.set_title(title)
+			ax.tick_params(axis='x', labelsize=6, rotation=45)
+			# add height to the bars
+			rect = ax.patches
+			for rect, a_per in zip(rect, a_per):
+				height = rect.get_height()
+				if height >= 4:
+					ax.text(
+			            rect.get_x() + rect.get_width() / 2,
+			            height - 0.01,
+			            round(float(a_per),1),
+			            horizontalalignment='center',
+			            verticalalignment='top',
+			            color='White'
+					)
+				else:
+					ax.text(
+			            rect.get_x() + rect.get_width() / 2,
+			            height + 0.01,
+			            round(float(y),1),
+			            horizontalalignment='center',
+			            verticalalignment='bottom',
+			            color='Black'
+					)
+			plt.tight_layout()
+			#plt.figure(figsize=(10,6))
+			plt.show()
+			return
+
+def graph_w_scroll(x, y, title, x_label, y_lable):
+	# Resources: 
+		# https://www.geeksforgeeks.org/python-scroll-through-plots/
+	# Setting fig and ax variables as subplots()
+	fig, ax = plt.subplots(figsize=(10,6))
+	ax.tick_params(axis='x', labelsize=9, rotation=45)
+	ax.set_xlabel(x_label)
+	ax.set_ylabel(y_lable)
+	ax.set_title(title)
+	plt.tight_layout()
+     
+    # Adjust the bottom size according to the
+    # requirement of the user
+	plt.subplots_adjust(bottom=0.25)
+
+    # plot the x and y using bar function
+	l = plt.bar(x, y)
+    # Set the axis and slider position in the plot
+	axis_position = plt.axes([0.2, 0.0, 0.65, 0.03])
+	slider_position = Slider(axis_position, 'Pos', -1, len(y)-10)
+    # add height to the bars
+	rect = ax.patches
+	# https://www.programiz.com/python-programming/methods/built-in/zip
+	for rect, y in zip(rect, y):
+		height = rect.get_height()
+		if height >= 4:
+			ax.text(
+	            rect.get_x() + rect.get_width() / 2,
+	            height - 0.01,
+	            round(float(y),1),
+	            horizontalalignment='center',
+	            verticalalignment='top',
+	            color='White'
+			)
+		else:
+			ax.text(
+	            rect.get_x() + rect.get_width() / 2,
+	            height + 0.01,
+	            round(float(y),1),
+	            horizontalalignment='center',
+	            verticalalignment='bottom',
+	            color='Black'
+			)
+	def update(val):
+		pos = slider_position.val
+		ax.axis([pos, pos+10, 0, 100])
+		fig.canvas.draw_idle()
+    # update function called using on_changed() function
+	slider_position.on_changed(update)
+    # Display the plot
+	plt.show()
+    # update() function to change the graph when the
+    # slider is in use
 
 
 # ------------------------------------------------------------------
