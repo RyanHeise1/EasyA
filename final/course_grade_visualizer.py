@@ -36,7 +36,7 @@ Development Process:
 # Imports
 import matplotlib.pyplot as plt
 from matplotlib.widgets import Slider
-import parser_1 as p 
+import gradeDataParser as p 
 
 def main(dep: str, level:str , classNum: str, allInstrucs: bool, list_dept_num: bool, display_d_f: bool = False, countClasses: bool = False):
 	"""
