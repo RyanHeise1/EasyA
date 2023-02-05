@@ -418,7 +418,13 @@ def graph_w_scroll(x, y, title, x_label, y_lable):
 	plt.bar(x, y)
     # Set the axis and slider position in the plot
 	axis_position = plt.axes([0.2, 0.0, 0.65, 0.03])
-	slider_position = Slider(axis_position, 'Pos', -1, len(y)-10)
+	slider_position = Slider(
+			axis_position, # The Axes to put the slider in
+			'Pos', # label
+			-1, # min value for slider
+			len(y)-10, # max value for slider
+			valinit=-1.0
+		)
     # add height to the bars
 	rect = ax.patches
 	# https://www.programiz.com/python-programming/methods/built-in/zip
@@ -454,6 +460,8 @@ def graph_w_scroll(x, y, title, x_label, y_lable):
 		fig.canvas.draw_idle()
     # update function called using on_changed() function
 	slider_position.on_changed(update)
+	# update graph to start at the first element in graph
+	update(-1)
     # Display the plot
 	plt.show()
 
