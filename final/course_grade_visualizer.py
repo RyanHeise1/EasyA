@@ -47,10 +47,14 @@ def main(dep: str, level:str , classNum: str, allInstrucs: bool, list_dept_num: 
 		the inputs to display the results.
 
 	Input:
-		- department name (dep), 
-		- level (100-600), 
-		- class number (classNum), 
-		- display all instructors or just faculty (allInstrucs)
+		- dep (str): name of the department
+		- level (str): level of the class (100-600)
+		- classNum (str): class number
+		- allInstrucs (bool): display all instructors or just faculty
+		- list_dept_num (bool): a flag to indicate if department number is displayed
+		- display_d_f (bool): (optional) a flag to indicate if data is displayed in a full format, default is False
+		- countClasses (bool): (optional) a flag to indicate if the number of classes is counted, default is False
+
 	Return: 
 		- None
 	"""
@@ -67,10 +71,11 @@ def main(dep: str, level:str , classNum: str, allInstrucs: bool, list_dept_num: 
 	elif level != None and dep != None and classNum == None:
 		# we have the level of the department
 		allC = p.getClassNumbers(dep)
+		# store necessary data in new variable so we can look up the class number
 		data = allC[int(level)]
-		if list_dept_num:
+		if list_dept_num: # Create graph with department numbers
 			department_graph(data, dep, level, display_d_f, allInstrucs, countClasses)
-		else:
+		else: # Create graph with instructor names
 			# we have the level of the department
 			dat = []
 			for c in data:
@@ -85,8 +90,10 @@ def main(dep: str, level:str , classNum: str, allInstrucs: bool, list_dept_num: 
 		d = p.parseGradeData(dep, classNum, None)
 		#plug into aPer
 		instructor_graph(dep + classNum, d, display_d_f, allInstrucs, countClasses)
+	# call to main had invalid data
 	else:
 		print("ERROR: Invalid querry")
+		return
 
 # ------------------------------------------------------------------
 #				FUNCTIONAL REQUIREMENT GRAPHS
@@ -98,18 +105,29 @@ def all_class_graph(class_list, dep, display_d_f, allInstrucs, countClasses):
 		  is the professor name and x-axis is the average percentage they 
 		  give. Graph similar to a2 in Project 1 Document
 	Input:
-		- class_list (dict) : dictionary provided from web scraper 
-		- dep (str) : Department of class (ie MATH, BI, CS)
+		- class_list (dict) : dictionary provided by the json parser
+		- dep (str) : name of the department you are graphing (ie. MATH, BI, CIS)
+		- display_d_f (bool) : a flag to indicate if data is displayed in a full format
+		- allInstrucs (bool) : display all instructors or just faculty
+		- countClasses (bool) : a flag to indicate if the number of classes is counted
+
 	Return: 
 		- None
 	"""
+	# Create new variable to store data to graph
+	# Will have the following format: 
+		# {name: [aperc, d/fperc, num classes taught], name2: [...], ...}
 	myDict = {}
+	# Data provided by json parser is a list of dictionary elements
 	for i in class_list:
+		# Start looking at key/values in dictionary
 		for j in class_list[i]:
+			# Set up key for myDict
 			lname = j['instructor'].split(',')[0].strip()
 			fname = j['instructor'].split(',')[1].strip()
 			full_name = fname + " " + lname
 
+			# Setting values for myDict
 			total_failing = float(j['dprec']) + float(j['fprec'])
 			aprec = float(j['aprec'])
 
@@ -127,6 +145,7 @@ def all_class_graph(class_list, dep, display_d_f, allInstrucs, countClasses):
 				elif allInstrucs:
 					# all instructors
 					myDict[full_name] = [aprec, total_failing, 1]
+	# Average values in myDict and then graph the data
 	myDict = average_dict(myDict)
 	graph_data(myDict, "Instructor", f'All {dep} Classes', display_d_f, countClasses)
 
@@ -137,23 +156,31 @@ def department_graph(class_list, dep, level, display_d_f, allInstrucs, countClas
 		  y-axis is the class level and x-axis is the average percentage 
 		  they give. Graph similar to graph (b) in Project 1 Document
 	Input:
-		- class_list () : 
+		- class_list (dict) : dictionary provided by the json parser
 		- dep (str) : Department of class (ie MATH, BI, CS)
 		- level (str) : Level of class (ie 122, 314)
+		- display_d_f (bool) : a flag to indicate if data is displayed in a full format
+		- allInstrucs (bool) : display all instructors or just faculty
+		- countClasses (bool) : a flag to indicate if the number of classes is counted
+
 	Return: 
 		- None
 	"""
-
-	# mydict = {class_num_1: [aperc, d+fperc, number_of_classes], class_num_2: [...]}
+	# Create new variable to store data to graph
+	# Will have the following format
+	#	 mydict = {class_num_1: [aperc, d+fperc, number_of_classes], class_num_2: [...]}
 	myDict = {}
 	# Loop over the list of classes (i is the class number ie 314)
 	for i in class_list:
+		# get class data from parser so we can add to myDict
 		class_data = p.parseGradeData(dep, i, None)
 		for j in class_data:
+			# Set up key for myDict
 			lname = j['instructor'].split(',')[0].strip()
 			fname = j['instructor'].split(',')[1].strip()
 			full_name = fname + " " + lname
 
+			# Set up values for myDict
 			total_failing = float(j['dprec']) + float(j['fprec'])
 			aprec = float(j['aprec'])
 
@@ -172,7 +199,9 @@ def department_graph(class_list, dep, level, display_d_f, allInstrucs, countClas
 				elif allInstrucs:
 					# all instructors
 					myDict[i] = [aprec, total_failing, 1]
+	# Average values in myDict and then graph the data
 	myDict = average_dict(myDict)
+	# if level was not displayed we want to display all 'x' level classes as a graph
 	if level != None:
 		graph_data(myDict, "Classes", f'All {dep} {level}-level', display_d_f, countClasses)
 	else:
@@ -188,17 +217,25 @@ def instructor_graph(class_name, data, display_d_f, allInstrucs, countClasses):
 	Input:
 		- class_name (str) : Name of the class
 		- data (dict) : Dictionary from the scraper
+		- display_d_f (bool) : a flag to indicate if data is displayed in a full format
+		- allInstrucs (bool) : display all instructors or just faculty
+		- countClasses (bool) : a flag to indicate if the number of classes is counted
+
 	Return: 
 		- None
 	"""
+	# Create new variable to store data to graph
+	# Will have the following format
+	#	 mydict = {instructor: [aperc, d+fperc, number_of_classes], instructor2: [...], ...}
 	myDict = {}
 	# Loop through data provided by scraper
 	for i in data:
-		#lname = i['instructor'].split(',')[0].strip()
+		# Set up key for myDict
 		lname = i['instructor'].split(',')[0].strip()
 		fname = i['instructor'].split(',')[1].strip()
 		full_name = fname + " " + lname
 
+		# Set up values for myDict
 		total_failing = float(i['dprec']) + float(i['fprec'])
 		aprec = float(i['aprec'])
 
@@ -219,11 +256,12 @@ def instructor_graph(class_name, data, display_d_f, allInstrucs, countClasses):
 			elif allInstrucs:
 				# all instructors
 				myDict[full_name] = [aprec, total_failing, 1]
-
+	# Average values in myDict and then graph the data
 	myDict = average_dict(myDict)
+	# if allInstrucs is true, we want to set the title to "All <CLASS> Instructors"
 	if allInstrucs:
 		graph_data(myDict, "Instructor", f'All {class_name} Instructors', display_d_f, countClasses)
-	else:
+	else: # else, just display the class name as the title
 		graph_data(myDict, "Instructor", class_name, display_d_f, countClasses)
 	
 # ------------------------------------------------------------------
@@ -234,10 +272,13 @@ def graph_data(myDict, x_label: str, title:str, display_d_f: bool, countClasses:
 	Summary: 
 		- Graphs data using matplotlib
 	Input:
-		- class_name (str) : Name of the class
-		- data (dict) : Dictionary from the scraper
+		- myDict (dict) : dictionary containing data to graph
+		- x_label (str) : label for x-axis
+		- title (str) : title of the graph
+		- display_d_f (bool) : a flag to indicate if data is displayed in a full format
+		- countClasses (bool) : a flag to indicate if the number of classes is counted
 	Return: 
-		- Graph
+		- a matplotlib graph using plt.show()
 	"""
 	# Call helper function to sort dict in decreasing order
 	sorted_a = sort_dict_by_value(myDict, key_func=lambda x: x[0])
@@ -251,21 +292,26 @@ def graph_data(myDict, x_label: str, title:str, display_d_f: bool, countClasses:
 
 	#add how many classes this professors done to name 'a' grades
 	for i in sorted_a:
+		# Add number of classses to data 
 		numClasses = " (" + str(myDict[i][2]) + ")"
+		# if countClasses is true append string to instructor/class name and append to list
 		a_data.append(i + (numClasses if countClasses else ''))
 		a_per.append(myDict[i][0])
 	#add how many classes this professors done to name for 'd/f' grades
 	for j in sorted_f:
+		# Add number of classses to data 
 		numClasses = " (" + str(myDict[i][2]) + ")"
+		# if countClasses is true append string to instructor/class name and append to list
 		f_data.append(j + (numClasses if countClasses else ''))
 		f_per.append(myDict[j][1])
 
 	# Check if user wanted to display 2 graphs
 	if display_d_f:
-		if len(f_data) > 50:
+		if len(f_data) > 30: # if length larger than 30, create graph with scroll
 			graph_w_scroll(f_data, f_per, title, x_label, "Percentage of D / F")
 			return
 		else:
+			# Create graph
 			fig, ax = plt.subplots(figsize=(10,6))
 			ax.bar(f_data, f_per)
 			ax.set_xlabel(x_label)
@@ -275,36 +321,39 @@ def graph_data(myDict, x_label: str, title:str, display_d_f: bool, countClasses:
 			# add height to the bars
 			rect = ax.patches
 			for rect, f_per in zip(rect, f_per):
+				# set the height for the 'y' argument in ax.text()
 				height = rect.get_height()
-				if height >= 4:
+				if height >= 4: # Add white text if the height is >= 4
 					ax.text(
 			            rect.get_x() + rect.get_width() / 2,
 			            height - 0.01,
 			            round(float(f_per),1),
 			            horizontalalignment='center',
 			            verticalalignment='top',
-			            color='White'
+			            color='White',
+			            fontsize='small'
 					)
-				else:
+				else: # else, set the text color to black
 					ax.text(
 			            rect.get_x() + rect.get_width() / 2,
 			            height + 0.01,
 			            round(float(f_per),1),
 			            horizontalalignment='center',
 			            verticalalignment='bottom',
-			            color='Black'
+			            color='Black',
+			            fontsize='small'
 					)
 			plt.tight_layout()
-			#plt.figure(figsize=(10,6))
 			plt.show()
 			return
 	else:
-		if len(a_data) > 50:
+		if len(a_data) > 30: # if length larger than 30, create graph with scroll
 			graph_w_scroll(a_data, a_per, title, x_label, "Percentage of A's")
 			return
 		else:
-			# Create one graph
+			# Create one graph with a size of 10,6
 			fig, ax = plt.subplots(figsize=(10,6))
+			# set graph parameters
 			ax.bar(a_data, a_per)
 			ax.set_xlabel(x_label)
 			ax.set_ylabel("Percentage of A's")
@@ -314,23 +363,25 @@ def graph_data(myDict, x_label: str, title:str, display_d_f: bool, countClasses:
 			rect = ax.patches
 			for rect, a_per in zip(rect, a_per):
 				height = rect.get_height()
-				if height >= 4:
+				if height >= 4: # Add white text if the height is >= 4
 					ax.text(
 			            rect.get_x() + rect.get_width() / 2,
 			            height - 0.01,
 			            round(float(a_per),1),
 			            horizontalalignment='center',
 			            verticalalignment='top',
-			            color='White'
+			            color='White',
+			            fontsize='small'
 					)
-				else:
+				else: # else, set the text color to black
 					ax.text(
 			            rect.get_x() + rect.get_width() / 2,
 			            height + 0.01,
 			            round(float(y),1),
 			            horizontalalignment='center',
 			            verticalalignment='bottom',
-			            color='Black'
+			            color='Black',
+			            fontsize='small'
 					)
 			plt.tight_layout()
 			#plt.figure(figsize=(10,6))
@@ -338,6 +389,18 @@ def graph_data(myDict, x_label: str, title:str, display_d_f: bool, countClasses:
 			return
 
 def graph_w_scroll(x, y, title, x_label, y_lable):
+	"""
+	Summary: 
+		- Graphs data using matplotlib with a scroll bar
+	Input:
+		- x (list) : data for x-axis on the graph
+		- y (list) : data for y-axis on the graph
+		- title (str) : title of the graph
+		- x_label (str) : label for the x-axis
+		- y_lable (str) : label for the y-axis
+	Return: 
+		- a matplotlib graph using plt.show()
+	"""
 	# Resources: 
 		# https://www.geeksforgeeks.org/python-scroll-through-plots/
 	# Setting fig and ax variables as subplots()
@@ -349,11 +412,10 @@ def graph_w_scroll(x, y, title, x_label, y_lable):
 	plt.tight_layout()
      
     # Adjust the bottom size according to the
-    # requirement of the user
 	plt.subplots_adjust(bottom=0.25)
 
     # plot the x and y using bar function
-	l = plt.bar(x, y)
+	plt.bar(x, y)
     # Set the axis and slider position in the plot
 	axis_position = plt.axes([0.2, 0.0, 0.65, 0.03])
 	slider_position = Slider(axis_position, 'Pos', -1, len(y)-10)
@@ -365,32 +427,35 @@ def graph_w_scroll(x, y, title, x_label, y_lable):
 		if height >= 4:
 			ax.text(
 	            rect.get_x() + rect.get_width() / 2,
-	            height - 0.01,
+	            height - 0.1,
 	            round(float(y),1),
 	            horizontalalignment='center',
 	            verticalalignment='top',
-	            color='White'
+	            color='White',
+	            fontsize='small'
 			)
 		else:
 			ax.text(
 	            rect.get_x() + rect.get_width() / 2,
-	            height + 0.01,
+	            height + 0.1,
 	            round(float(y),1),
 	            horizontalalignment='center',
 	            verticalalignment='bottom',
-	            color='Black'
+	            color='Black',
+	            fontsize='small'
 			)
 	def update(val):
+		# Called when slider updates
+		# Set the position to where the slider is
 		pos = slider_position.val
+		# Change the axis information with the new position
 		ax.axis([pos, pos+10, 0, 100])
+		# redraw the canvas
 		fig.canvas.draw_idle()
     # update function called using on_changed() function
 	slider_position.on_changed(update)
     # Display the plot
 	plt.show()
-    # update() function to change the graph when the
-    # slider is in use
-
 
 # ------------------------------------------------------------------
 #						AUXILIARY FUNCTIONS
@@ -407,6 +472,8 @@ def average_dict(myDict):
 	"""
 	# loop through all elements in myDict
 	for i in myDict:
+		# 2nd index of dict value is the total number of classes
+		# going to use this to average the 1st and 2nd indexes of the dict values
 		total_classes = myDict[i][2]
 		# Average 'a' score
 		if myDict[i][0] != 0 or myDict[i][2] != 0:
@@ -424,8 +491,10 @@ def sort_dict_by_value(d, key_func, reverse=True):
 	Input:
 		- d (dict) : Dictionary you want sorted. format {key: [aperc, fperc, total_classes]})
 		- key_func (lambda func) : lambda function of item in list you want sorted
-		- reverse (bool) : Sort list by increasing/decreasing order
+		- reverse (bool) : (optional) Sort list by increasing/decreasing order, 
+			default sorts in decreasing order
 	Return:
 		- sorted dictionary
 	"""
+	# call sort() on dictionary items with lambda function
 	return dict(sorted(d.items(), key=lambda item: key_func(item[1]), reverse=reverse))
