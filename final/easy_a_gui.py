@@ -1,13 +1,20 @@
 """
-    1/19/23 --> created the main window and added comboboxes
+Author: Zachary Brant
+CS 422 Software Methodologies
+EasyA
 
-    1/22/23 --> added checkboxes and radio buttons for extra options
+Development process:
+1/19/23 --> created the main window and added comboboxes
 
-    1/26/23 --> started pulling actual data from parser.py
+1/22/23 --> added checkboxes and radio buttons for extra options
 
-    1/27/23 --> added UO logo image
+1/26/23 --> started pulling actual data from parser.py
 
-    2/1/23  --> added ProfButton functionality
+1/27/23 --> added UO logo image
+
+2/1/23  --> added ProfButton functionality
+
+2/2/23  --> added comments explaining functionality
 """
 
 # =================================================================== #
@@ -15,8 +22,8 @@
 # =================================================================== #
 from tkinter import *
 from tkinter import ttk
-from parser_1 import *
-import graph
+from gradeDataParser import *
+import course_grade_visualizer
 import os.path
 
 # =================================================================== #
@@ -37,7 +44,7 @@ include_GS = 1
 sort_by_prof = 0 
 # variable indicating which type of graph to show (1 for % As 0 for % Ds/Fs)
 type_of_graph_to_show = 0 
-
+# variable indicating whether or not to show the number of each class next to professors names
 show_class_count = 0
 
 # =================================================================== #
@@ -48,6 +55,21 @@ These functions are called when the user selects an option or clicks a button.
 """
 
 def search_button(event):
+    """
+    This function changes the class level based on the user's selection.
+
+    Input:
+    - event: An event that triggers the function to run
+
+    Actions:
+    - Updates the values in the "classNumbercombo" dropdown list
+    - Resets the value of "classNumbercombo"
+    - Calls the "change_class_numbers" function
+    - Focuses on the "searchButton"
+
+    Output:
+    - None
+    """
     departmentName = getDepartmentNames()[deptNamecombo.current()]
     classLevel = classLevelcombo.get()
     classNumber = classNumbercombo.get()
