@@ -19,6 +19,7 @@ Modification Date: January 23rd, 2023 - improved upload_file() function for more
     January 31st, 2023 - added no_middle_init(filename) function, LVH
     February 1st, 2023 - added ParseJSFile(filepath) function, KS
     February 2nd, 2023 - added better documentation and comments and visuals to match stuGUI, LVH
+    February 3rd, 2023 - added compareNames() function, KS
 """
 
 def ParseJSFile(filepath):
@@ -144,6 +145,78 @@ def no_middle_init(filename):
         json.dump(data, f, indent=4)
 
 
+def getProfessors(department: str) -> list:
+    """ getProfessors(department: str) -> list
+        Provides all the professors of the given department
+
+        Input: department name (i.e. MATH)
+        Output: returns a list of professors under a class name of such department from 'gd.js'
+        Note: if inserted an invalid department name, will return an empty list
+    """
+    # Reads 'gd.js'
+    f = open('gd.js', 'r')
+    # Data holds a dictionary of 'gd.js'
+    data = json.load(f)
+    f.close()
+
+    # Will hold list of all professors of a department
+    returnVal = []
+
+    # Iterates through all the class_names (i.e. MATH111)
+    for class_name in data:
+        # Index holds the start of the class number, to split between the department and the class number
+        index = -1
+        for i in range(len(class_name)):
+            if class_name[i].isdigit():
+                index = i
+                break
+        # Holds the department name of class_name
+        dep = class_name[:index]
+        # Checks if the inputed department name is the same as class_name
+        if department == dep:
+            # Iterates through class_name in 'gd.js'
+            for term in data[class_name]:
+                # Confirms not a duplicate instructor
+                if term["instructor"] not in returnVal:
+                    returnVal.append(term["instructor"])
+
+    return returnVal
+
+
+def compareNames() -> tuple:
+    """ compareNames() -> tuple
+        Compares the faculty names in 'Faculty.js' from 'gd.js'
+        Output: Returns a tuple of the names matched and the names not matched
+    """
+    # Read Faculty data
+    f_faculty = open('Faculty.js', 'r')
+
+    # Faculty_data holds a dictionary from Faculty.js
+    # Keys are the department names, values are the list of professors associated with such department
+    faculty_data = json.load(f_faculty)
+    f_faculty.close()
+
+    # Counts the names from "Faculty.js" that are in "gd.js" (the reformatted names)
+    common_facultyToGd = 0
+    # Counts the names from "Faculty.js" that do not match
+    noMatch_facultyToGd = 0
+
+    # Iterates through departments
+    for department in faculty_data:
+        # "Neuroscience" is not a department name in the class names in 'gd.js'
+        if department == "Neuroscience": continue
+
+        # Professors in department in 'gd.js'
+        gd_profs = getProfessors(department)
+
+        # Iterates through professors from 'Faculty.js'
+        for professor in faculty_data[department]:
+            # Checks to see if professor in 'Faculty.js' is in 'gs.js'
+            if professor in gd_profs:
+                common_facultyToGd += 1
+            else: noMatch_facultyToGd += 1
+    return (common_facultyToGd, noMatch_facultyToGd)
+
 def upload_file():
     """ upload_file():
         takes in no parameters but generates Admin GUI instructing user
@@ -181,6 +254,14 @@ def upload_file():
     os.remove("gd.js")
     # Move the file to the current working directory and rename it to 'gd.js'
     shutil.move(filepath, "gd.js")
+
+    # Check how many professors from the new data are also in Faculty.js
+    (common_facultyToGd, noMatch_facultyToGd) = compareNames()
+
+    # Prints the statistics found
+    print(common_facultyToGd, "names were matched from Faculty.js to gd.js")
+    print(noMatch_facultyToGd, "names were not matched from Faculty.js to gd.js")
+
     # Print a message indicating that the file has been uploaded and added to the directory
     print('File uploaded and added to directory.')
 
