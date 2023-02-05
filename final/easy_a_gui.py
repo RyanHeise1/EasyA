@@ -24,7 +24,7 @@ Development process:
 # =================================================================== #
 import tkinter as tk
 from tkinter import ttk
-from gradeDataParser import *
+import gradeDataParser as gdp
 import course_grade_visualizer as graph
 import os.path
 
@@ -35,7 +35,7 @@ import os.path
 # list of department names
 department_name_dict = {"BI":"Biology", "CH":"Chemistry", "CIS":"Computer and Information Sciences", "HPHY":"Human Physiology", "MATH":"Mathematics", "PHYS":"Physics", "PSY":"Psychology"}
 department_list = []
-for i in getDepartmentNames():
+for i in gdp.getDepartmentNames():
     if i in department_name_dict.keys():
         department_list.append(department_name_dict.get(i))
     else:
@@ -72,7 +72,7 @@ def search_button():
     Output:
     - None
     """
-    departmentName = getDepartmentNames()[deptNamecombo.current()]
+    departmentName = gdp.getDepartmentNames()[deptNamecombo.current()]
     classLevel = classLevelcombo.get()
     classNumber = classNumbercombo.get()
     if (classNumber != ""):
@@ -103,8 +103,8 @@ def change_class_level(event):
     if (current_class_level == ""):
         classNumbercombo.config(values=[""])
     else:
-        current_department = getDepartmentNames()[deptNamecombo.current()]
-        current_class_numbers = getClassNumbers(current_department)
+        current_department = gdp.getDepartmentNames()[deptNamecombo.current()]
+        current_class_numbers = gdp.getClassNumbers(current_department)
         current_class_numbers[int(current_class_level)].insert(0, "")
         classNumbercombo.config(value=current_class_numbers[int(current_class_level)])
     classNumbercombo.set("")
@@ -470,6 +470,7 @@ infoButton = tk.Button(text="Info",
 
 # placing the info button
 infoButton.place(relx=.92, y=5)
+
 
 # =================================================================== #
 # mainloop so window stays open
