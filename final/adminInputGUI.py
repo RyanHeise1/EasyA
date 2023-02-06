@@ -300,8 +300,6 @@ The following lines of code set up Graphical User Interface for uploading new da
 root = tk.Tk(className=" Easy A")
 # window size
 root.geometry("600x100")
-# remove ability to change window dimensions
-root.resizable(False, False)
 # set background color
 root.config(bg="#007030")
 
