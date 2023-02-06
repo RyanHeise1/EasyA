@@ -250,10 +250,33 @@ def upload_file():
         return
     # Call the no_middle_init function to remove middle initials from instructor names
     no_middle_init(filepath)
+    
+    # Variable that keeps track of if we had to rename the file
+    renamed = False
+    # get the directory we're in
+    destination_folder = os.getcwd()
+    # Check if there's already a file in the filepath that's the same name
+    if os.path.isfile(os.path.join(destination_folder, os.path.basename(filepath))):
+        # Split between filename and file extension
+        filename, file_extension = os.path.splitext(filepath)
+        # Create new filename
+        new_filename = f"{filename}(1){file_extension}"
+        # if not os.path.isfile(os.path.join(destination_folder, new_filename)):
+        #     break
+
+        # Rename the file
+        os.rename(filepath, os.path.join(destination_folder, new_filename))
+        # Show that the file was renamed
+        renamed = True
+
     # Remove the file named 'gd.js' gd.js is our main data repository
     os.remove("gd.js")
+    # Check to make sure we didn't have to rename the file
+    if renamed:
+        shutil.move(new_filename, "gd.js")
     # Move the file to the current working directory and rename it to 'gd.js'
-    shutil.move(filepath, "gd.js")
+    else:
+        shutil.move(filepath, "gd.js")
 
     # Check how many professors from the new data are also in Faculty.js
     (common_facultyToGd, noMatch_facultyToGd) = compareNames()
