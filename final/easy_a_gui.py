@@ -250,13 +250,13 @@ window.config(bg="#007030")
 # =================================================================== #
 
 # check if UO logo image is donwloaded and available to use
-if (os.path.isfile("uoo.png")):
-    UOimage = tk.PhotoImage(file="uoo.png")
+if (os.path.isfile("images/uoo.png")):
+    UOimage = tk.PhotoImage(file="images/uoo.png")
     imageLabel = tk.Label(image=UOimage, bg="#007030")
     imageLabel.place(x=9, y=5)
 # check if puddles image is donwloaded and available to use
-if (os.path.isfile("puddles.png")):
-    puddlesimage = tk.PhotoImage(file="puddles.png")
+if (os.path.isfile("images/puddles.png")):
+    puddlesimage = tk.PhotoImage(file="images/puddles.png")
     puddlesimageLabel = tk.Label(image=puddlesimage, bg="#007030")
     puddlesimageLabel.place(x=450, y=405)
 
