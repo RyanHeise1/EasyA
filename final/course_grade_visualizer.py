@@ -317,7 +317,7 @@ def graph_data(myDict, x_label: str, title:str, display_d_f: bool, countClasses:
 			ax.set_xlabel(x_label)
 			ax.set_ylabel("Percentage of D / F")
 			ax.set_title(title)
-			ax.tick_params(axis='x', labelsize=6, rotation=45)
+			ax.tick_params(axis='x', labelsize=10, rotation=45)
 			# add height to the bars
 			rect = ax.patches
 			for rect, f_per in zip(rect, f_per):
@@ -358,7 +358,7 @@ def graph_data(myDict, x_label: str, title:str, display_d_f: bool, countClasses:
 			ax.set_xlabel(x_label)
 			ax.set_ylabel("Percentage of A's")
 			ax.set_title(title)
-			ax.tick_params(axis='x', labelsize=6, rotation=45)
+			ax.tick_params(axis='x', labelsize=10, rotation=45)
 			# add height to the bars
 			rect = ax.patches
 			for rect, a_per in zip(rect, a_per):
@@ -405,7 +405,7 @@ def graph_w_scroll(x, y, title, x_label, y_lable):
 		# https://www.geeksforgeeks.org/python-scroll-through-plots/
 	# Setting fig and ax variables as subplots()
 	fig, ax = plt.subplots(figsize=(10,6))
-	ax.tick_params(axis='x', labelsize=9, rotation=45)
+	ax.tick_params(axis='x', labelsize=10, rotation=45)
 	ax.set_xlabel(x_label)
 	ax.set_ylabel(y_lable)
 	ax.set_title(title)
@@ -425,6 +425,7 @@ def graph_w_scroll(x, y, title, x_label, y_lable):
 			len(y)-10, # max value for slider
 			valinit=-1.0
 		)
+	slider_position.valtext.set_visible(False)
     # add height to the bars
 	rect = ax.patches
 	# https://www.programiz.com/python-programming/methods/built-in/zip
