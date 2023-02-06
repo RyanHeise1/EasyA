@@ -18,7 +18,7 @@ Once the necessary libraries are installed you can run the easy_a_gui.py file to
 
 If you wish to insert data you first need to run the admininputGUI.py file. Then click the "Upload File" button and select the data file you wish to upload. 
 
-If you wish to use the web scraper...
+If you wish to use the web scraper, run the webScraper.py file. If it prints an error, rerun the program.
 
 Additional Setup:
 No additional setup is required.
