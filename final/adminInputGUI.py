@@ -95,6 +95,58 @@ def check_headers(filename):
         # if the file doesn't contain valid JSON data, print an error message
         print("Error: The file does not contain valid JSON data.")
         return False
+   
+
+def correct_data(filename):
+    """ correct_data(filename: str):
+        Takes in the file, 'filename' and ensures that the data is actually correct
+
+        - Parameters
+            filepath is the name of the file that the user has uploaded (i.e. /Users/Lauren/Desktop/gradedata.js)
+
+        - Input
+            We are stepping through each class for each term and checking the contents are valid
+        - Note
+            Will not throw an error but will print out a statement letting the user know the
+            data is invalid
+    """
+    with open(filename) as f:
+        # Read the contents of the file and parse it as a JSON object
+        data = json.loads(f.read())
+
+        expected_headers = ['TERM_DESC', 'aprec', 'bprec', 'cprec', 'crn', 'dprec', 'fprec', 'instructor']
+        season = ['Spring', 'Winter', 'Fall', 'Summer']
+
+        # Loop through each class (clas) in the data
+        for clas in data:
+            # Loop through each term in the class
+            for term in data[clas]:
+                # Go through aprec, dprec, and fprec and ensure
+                # the data is actually an integer and the correct amount
+                if type(term['aprec']) != str:
+                    print(clas, term, "Incorrect aprec type")
+                elif not all((term['aprec'][i].isdigit() or term['aprec'][i] == '.') for i in range(len(term['aprec']))):
+                    print(clas, term, "Incorrect aprec number")
+                else:
+                    if float(term['aprec']) < 0 or float(term['aprec']) > 100:
+                        print(clas, term, "Incorrect aprec type")
+                if ((type(term['dprec']) != str)):
+                    print(clas, "Incorrect dprec type")
+                elif not all((term['dprec'][i].isdigit() or term['dprec'][i] == '.') for i in range(len(term['dprec']))):
+                    print(clas, term, "Incorrect dprec number")
+                else:
+                    if float(term['dprec']) < 0 or float(term['dprec']) > 100:
+                        print(clas, term, "Incorrect dprec amount")
+                if ((type(term['fprec']) != str)):
+                    print(clas, term, "Incorrect fprec type")
+                elif not all((term['fprec'][i].isdigit() or term['fprec'][i] == '.') for i in range(len(term['fprec']))):
+                    print(clas, term, "Incorrect fprec number")
+                else:
+                    # Check fprec amount
+                    if float(term['fprec']) < 0 or float(term['fprec']) > 100 :
+                        print(clas, term, "Incorrect fprec amount")
+                if((type(term['instructor']) != str)):
+                    print(clas, term, "Incorrect Instructor name")
 
 
 def no_middle_init(filename):
@@ -248,6 +300,10 @@ def upload_file():
     # Check if the headers of the file are incorrect
     if(check_headers(filepath) == False):
         return
+    
+    # Validate data value inputs
+    correct_data(filepath)
+    
     # Call the no_middle_init function to remove middle initials from instructor names
     no_middle_init(filepath)
     
