@@ -377,7 +377,7 @@ def graph_data(myDict, x_label: str, title:str, display_d_f: bool, countClasses:
 					ax.text(
 			            rect.get_x() + rect.get_width() / 2,
 			            height + 0.01,
-			            round(float(y),1),
+			            round(float(a_per),1),
 			            horizontalalignment='center',
 			            verticalalignment='bottom',
 			            color='Black',
