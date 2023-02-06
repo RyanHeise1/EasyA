@@ -312,7 +312,7 @@ def graph_data(myDict, x_label: str, title:str, display_d_f: bool, countClasses:
 			return
 		else:
 			# Create graph
-			fig, ax = plt.subplots(figsize=(10,6))
+			fig, ax = plt.subplots(figsize=(10,6), num=title + " | " + "Percentage of D / F")
 			ax.bar(f_data, f_per)
 			ax.set_xlabel(x_label)
 			ax.set_ylabel("Percentage of D / F")
@@ -352,7 +352,7 @@ def graph_data(myDict, x_label: str, title:str, display_d_f: bool, countClasses:
 			return
 		else:
 			# Create one graph with a size of 10,6
-			fig, ax = plt.subplots(figsize=(10,6))
+			fig, ax = plt.subplots(figsize=(10,6), num=title + " | " + "Percentage of A's")
 			# set graph parameters
 			ax.bar(a_data, a_per)
 			ax.set_xlabel(x_label)
@@ -404,7 +404,7 @@ def graph_w_scroll(x, y, title, x_label, y_lable):
 	# Resources: 
 		# https://www.geeksforgeeks.org/python-scroll-through-plots/
 	# Setting fig and ax variables as subplots()
-	fig, ax = plt.subplots(figsize=(10,6))
+	fig, ax = plt.subplots(figsize=(10,6), num=title + " | " + y_lable)
 	ax.tick_params(axis='x', labelsize=10, rotation=45)
 	ax.set_xlabel(x_label)
 	ax.set_ylabel(y_lable)
