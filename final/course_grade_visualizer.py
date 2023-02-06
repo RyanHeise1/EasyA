@@ -38,6 +38,9 @@ import matplotlib.pyplot as plt
 from matplotlib.widgets import Slider
 import gradeDataParser as p 
 
+# Global var
+fig_num = 1
+
 def main(dep: str, level:str , classNum: str, allInstrucs: bool, list_dept_num: bool, display_d_f: bool = False, countClasses: bool = False):
 	"""
 	Summary: 
@@ -81,8 +84,8 @@ def main(dep: str, level:str , classNum: str, allInstrucs: bool, list_dept_num: 
 			for c in data:
 				dat += p.parseGradeData(dep, c, None)
 			#plug into grapher
-			instructor_graph(dep+level, dat, display_d_f, allInstrucs, countClasses)
-
+			instructor_graph(dep + " " + f'{level}-level', dat, display_d_f, allInstrucs, countClasses)
+ 
 	# Parse individual class
 	elif classNum != None and dep != None and level == None:
 		# we have department and class number
@@ -203,11 +206,11 @@ def department_graph(class_list, dep, level, display_d_f, allInstrucs, countClas
 	myDict = average_dict(myDict)
 	# if level was not displayed we want to display all 'x' level classes as a graph
 	if level != None:
-		graph_data(myDict, "Classes", f'All {dep} {level}-level', display_d_f, countClasses)
+		graph_data(myDict, "Classes", f'All {dep} {level}-level classes', display_d_f, countClasses)
 	else:
 		graph_data(myDict, "Classes", f'All {dep} Classes', display_d_f, countClasses)
 
-def instructor_graph(class_name, data, display_d_f, allInstrucs, countClasses):
+def instructor_graph(class_name, data, display_d_f, allInstrucs, countClasses, ):
 	"""
 	Summary: 
 		- Displays graph with all professors who teach a specified class 
@@ -280,6 +283,7 @@ def graph_data(myDict, x_label: str, title:str, display_d_f: bool, countClasses:
 	Return: 
 		- a matplotlib graph using plt.show()
 	"""
+	global fig_num
 	# Call helper function to sort dict in decreasing order
 	sorted_a = sort_dict_by_value(myDict, key_func=lambda x: x[0])
 	sorted_f = sort_dict_by_value(myDict, key_func=lambda x: x[1])
@@ -311,13 +315,15 @@ def graph_data(myDict, x_label: str, title:str, display_d_f: bool, countClasses:
 			graph_w_scroll(f_data, f_per, title, x_label, "Percentage of D / F")
 			return
 		else:
+			y_lable = "Percentage of D / F"
 			# Create graph
-			fig, ax = plt.subplots(figsize=(10,6), num=title + " | " + "Percentage of D / F")
+			fig, ax = plt.subplots(figsize=(10,6), num=title + " | " + y_lable + f" | Figure {fig_num}")
 			ax.bar(f_data, f_per)
 			ax.set_xlabel(x_label)
-			ax.set_ylabel("Percentage of D / F")
+			ax.set_ylabel(y_lable)
 			ax.set_title(title)
 			ax.tick_params(axis='x', labelsize=10, rotation=90)
+			fig_num += 1
 			# add height to the bars
 			rect = ax.patches
 			for rect, f_per in zip(rect, f_per):
@@ -348,17 +354,19 @@ def graph_data(myDict, x_label: str, title:str, display_d_f: bool, countClasses:
 			return
 	else:
 		if len(a_data) > 30: # if length larger than 30, create graph with scroll
-			graph_w_scroll(a_data, a_per, title, x_label, "Percentage of A's")
+			graph_w_scroll(a_data, a_per, title, x_label, "Percentage of As")
 			return
 		else:
+			y_lable = "Percentage of As"
 			# Create one graph with a size of 10,6
-			fig, ax = plt.subplots(figsize=(10,6), num=title + " | " + "Percentage of A's")
+			fig, ax = plt.subplots(figsize=(10,6), num=title + " | " + y_lable + f" | Figure {fig_num}")
 			# set graph parameters
 			ax.bar(a_data, a_per)
 			ax.set_xlabel(x_label)
-			ax.set_ylabel("Percentage of A's")
+			ax.set_ylabel(y_lable)
 			ax.set_title(title)
 			ax.tick_params(axis='x', labelsize=10, rotation=90)
+			fig_num += 1
 			# add height to the bars
 			rect = ax.patches
 			for rect, a_per in zip(rect, a_per):
@@ -384,7 +392,6 @@ def graph_data(myDict, x_label: str, title:str, display_d_f: bool, countClasses:
 			            fontsize='small'
 					)
 			plt.tight_layout()
-			#plt.figure(figsize=(10,6))
 			plt.show()
 			return
 
@@ -404,12 +411,14 @@ def graph_w_scroll(x, y, title, x_label, y_lable):
 	# Resources: 
 		# https://www.geeksforgeeks.org/python-scroll-through-plots/
 	# Setting fig and ax variables as subplots()
-	fig, ax = plt.subplots(figsize=(10,6), num=title + " | " + y_lable)
+	global fig_num
+	fig, ax = plt.subplots(figsize=(10,6), num=title + " | " + y_lable + f" | Figure {fig_num}")
 	ax.tick_params(axis='x', labelsize=10, rotation=90)
 	ax.set_xlabel(x_label)
 	ax.set_ylabel(y_lable)
 	ax.set_title(title)
 	plt.tight_layout()
+	fig_num += 1
      
     # Adjust the bottom size according to the
 	plt.subplots_adjust(bottom=0.25)
@@ -465,6 +474,7 @@ def graph_w_scroll(x, y, title, x_label, y_lable):
 	update(-1)
     # Display the plot
 	plt.show()
+	return
 
 # ------------------------------------------------------------------
 #						AUXILIARY FUNCTIONS
