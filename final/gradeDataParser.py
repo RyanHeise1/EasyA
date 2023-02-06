@@ -3,7 +3,7 @@
     Created: 1/20/2023
     Author: Katherine Smirnov
 
-    Provides the data needed for the Student UI and from the user input.
+    Provides the data needed for the Student UI and for the graph visualizer.
         Returns list of courses for a department for the easy_A_GUI.py course name dropdown. Provides a dropdown menu
             which restricts user to select only valid course and department names.
         Parses data from 'gd.js'. Used by course_grade_visualizer.py (which gets user input from easy_A_GUI.py) to pull the data
@@ -12,8 +12,8 @@
     Files:
         Reads from 'Faculty.js' and 'gd.js'
 
-    Modications:
-        1/20/2023: Sucessfully loaded data using json to a dictionary format. Wrote getter functions (parseGradeData)
+    Modifications:
+        1/20/2023: Successfully loaded data using json to a dictionary format. Wrote getter functions (parseGradeData)
                     for course_grade_visualizer.py to load their data
         1/25/2023: Wrote getter functions (getClassNumbers, getDepartmentNames), for easy_A_GUI.py dropdown menu
         2/1/2023: Wrote getFacultyData(), which reads from 'Faculty.js'
@@ -100,7 +100,8 @@ def getClassNumbers(department: str) -> dict:
                 list of all the class names of that level (i.e. 111, 121 ...)
 
         Note:
-            Does not validate that the department exists, because the user should not be able to input an invalid department
+            Does not validate that the department exists, because the user should not be able to input an invalid
+            department
 
         Used by easy_A_GUI.py
     """
