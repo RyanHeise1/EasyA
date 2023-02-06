@@ -130,6 +130,14 @@ def all_class_graph(class_list, dep, display_d_f, allInstrucs, countClasses):
 			fname = j['instructor'].split(',')[1].strip()
 			full_name = fname + " " + lname
 
+			# Check to make sure data is valid
+			if j['aprec'].strip() == "":
+				j['aprec'] = "0.0"
+			if j['dprec'].strip() == "":
+				j['aprec'] = "0.0"
+			if j['fprec'].strip() == "":
+				j['aprec'] = "0.0"
+
 			# Setting values for myDict
 			total_failing = float(j['dprec']) + float(j['fprec'])
 			aprec = float(j['aprec'])
@@ -182,6 +190,14 @@ def department_graph(class_list, dep, level, display_d_f, allInstrucs, countClas
 			lname = j['instructor'].split(',')[0].strip()
 			fname = j['instructor'].split(',')[1].strip()
 			full_name = fname + " " + lname
+
+			# Check to make sure data is valid
+			if j['aprec'].strip() == "":
+				j['aprec'] = "0.0"
+			if j['dprec'].strip() == "":
+				j['aprec'] = "0.0"
+			if j['fprec'].strip() == "":
+				j['aprec'] = "0.0"
 
 			# Set up values for myDict
 			total_failing = float(j['dprec']) + float(j['fprec'])
@@ -237,6 +253,14 @@ def instructor_graph(class_name, data, display_d_f, allInstrucs, countClasses, )
 		lname = i['instructor'].split(',')[0].strip()
 		fname = i['instructor'].split(',')[1].strip()
 		full_name = fname + " " + lname
+
+		# Check to make sure data is valid
+		if i['aprec'].strip() == "":
+			i['aprec'] = "0.0"
+		if i['dprec'].strip() == "":
+			i['aprec'] = "0.0"
+		if i['fprec'].strip() == "":
+			i['aprec'] = "0.0"
 
 		# Set up values for myDict
 		total_failing = float(i['dprec']) + float(i['fprec'])
